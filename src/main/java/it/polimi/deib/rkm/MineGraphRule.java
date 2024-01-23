@@ -1,6 +1,7 @@
 package it.polimi.deib.rkm;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.neo4j.procedure.Description;
@@ -12,7 +13,7 @@ public class MineGraphRule {
 
     @Procedure(name = "rkm.mineGraphRule", mode=Mode.READ)
     @Description("Graph Association Rule Mining for Neo4j")
-    public Stream<AssociationRule> mineGraphRule(
+    public Stream<AssociationRule.AssociationRuleRecord> mineGraphRule(
             // Input parameters here
             @Name("alias")      String alias,
             @Name("alias_node") String alias_node,
@@ -22,7 +23,7 @@ public class MineGraphRule {
             @Name("confidence") Number confidence
             ) {
         // Procedure logic here
-        return Stream.of(new AssociationRule());
+        return Stream.of(new AssociationRule().toRecord());
     }
 
 }

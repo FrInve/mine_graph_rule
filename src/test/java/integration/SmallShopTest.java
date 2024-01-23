@@ -32,7 +32,7 @@ class SmallShopTest {
         }
 
         this.embeddedDatabaseServer = Neo4jBuilders.newInProcessBuilder()
-//                .withProcedure(MineGraphRule.class)
+                .withProcedure(MineGraphRule.class)
                 .withFixture(sw.toString())
                 .build();
     }
