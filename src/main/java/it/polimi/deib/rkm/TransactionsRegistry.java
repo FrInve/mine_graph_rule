@@ -5,8 +5,6 @@ import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.procedure.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public class TransactionsRegistry {
@@ -16,17 +14,17 @@ public class TransactionsRegistry {
 
     @Procedure(name="rkm.asm.getNumberOfTransactions", mode=Mode.READ)
     @Description("CALL rkm.asm.getNumberOfTransactions(alias_node)")
-    public Stream<Output> getNumberOfTransactions(
+    public Stream<TransactionsCount> getNumberOfTransactions(
             @Name("alias_node") String alias_node
     ){
-        Output output = new Output(this.get_number_of_transactions(db, alias_node));
-        return Stream.of(output);
+        TransactionsCount transactionsCount = new TransactionsCount(this.get_number_of_transactions(db, alias_node));
+        return Stream.of(transactionsCount);
     }
 
-    public static class Output{
-        public Long out;
-        public Output(Long output){
-            this.out = output;
+    public static class TransactionsCount {
+        public Long count;
+        public TransactionsCount(Long count){
+            this.count = count;
         }
     }
 

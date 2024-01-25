@@ -73,4 +73,18 @@ class SmallShopTest {
 
         }
     }
+
+    @Test
+    void shouldMineGraphRules(){
+        try(
+                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+                var session = driver.session()
+        ) {
+            // language=cypher
+            session.run("""
+                    CALL rkm.mineGraphRule("P", "Person", ["a"], ["b"], 0.5, 0.5)
+                    """)
+                    .stream();
+        }
+    }
 }

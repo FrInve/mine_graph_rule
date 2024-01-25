@@ -1,8 +1,6 @@
 package unit;
 
 
-import it.polimi.deib.rkm.MineGraphRule;
-import it.polimi.deib.rkm.TransactionsRegistry;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.neo4j.driver.Values.parameters;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SmallShopTest{
+class TransactionsRegistryTest {
     private Neo4j embeddedDatabaseServer;
 
     @BeforeAll
@@ -34,7 +32,7 @@ class SmallShopTest{
         }
 
         this.embeddedDatabaseServer = Neo4jBuilders.newInProcessBuilder()
-                .withProcedure(TransactionsRegistry.class)
+                .withProcedure(it.polimi.deib.rkm.TransactionsRegistry.class)
                 .withFixture(sw.toString())
                 .build();
     }
@@ -57,7 +55,7 @@ class SmallShopTest{
                     CALL rkm.asm.getNumberOfTransactions($alias_node)
                     """, parameters("alias_node", "Article"))
                     .stream()
-                    .map(r -> r.get("out"))
+                    .map(r -> r.get("count"))
                     .map(Value::asLong)
                     .toList();
 

@@ -1,6 +1,5 @@
 package it.polimi.deib.rkm;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,16 @@ public final class AssociationRule {
     public double support;
     public double confidence;
 
-    public AssociationRule() {
+    public AssociationRule(
+            List<String> item_head,
+            List<String> item_body,
+            double support,
+            double confidence
+            ) {
+        this.head = new ItemSet(item_head);
+        this.body = new ItemSet(item_body);
+        this.support = support;
+        this.confidence = confidence;
     }
 
     public AssociationRuleRecord toRecord(){
