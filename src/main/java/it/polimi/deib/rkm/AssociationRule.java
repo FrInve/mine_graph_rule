@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 public final class AssociationRule {
-    public ItemSet body;
-    public ItemSet head;
-    public double support;
-    public double confidence;
+    private ItemSet body;
+    private ItemSet head;
+    private double support;
+    private double confidence;
 
     public AssociationRule(
             List<String> item_head,

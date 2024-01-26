@@ -9,7 +9,7 @@ public class ItemSet {
     public ItemSet(List<String> item_list) {
     }
 
-    public void add_one(Item item){
+    public void addOne(Item item){
 
     }
 
