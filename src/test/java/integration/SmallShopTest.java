@@ -82,7 +82,7 @@ class SmallShopTest {
         ) {
             // language=cypher
             session.run("""
-                    CALL rkm.mineGraphRule("P", "Person", ["a"], ["b"], 0.5, 0.5)
+                    CALL rkm.mineGraphRule("P", "Person", [{a:{b: "c", d: "e"}}, {c:"d"}], ["b"], 0.5, 0.5)
                     """)
                     .stream();
         }

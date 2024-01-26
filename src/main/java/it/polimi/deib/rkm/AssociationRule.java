@@ -48,7 +48,7 @@ public final class AssociationRule {
      *     <li>{@link Node}</li>
      *     <li>{@link org.neo4j.graphdb.Relationship}</li>
      *     <li>{@link org.neo4j.graphdb.Path}</li>
-     *     <li>{@link Map} with key {@link String} and value {@link Object}</li>
+     *     <li>{@link Map} with key {@link String} and value {@link Object}</li> - Keys dont have quotes in Cypher!
      *     <li>{@link List} of elements of any valid field type, including {@link List}</li>
      *     <li>{@link Object}, meaning any of the valid field types</li>
      * </ul>

@@ -2,6 +2,7 @@ package it.polimi.deib.rkm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -20,7 +21,7 @@ public class MineGraphRule {
             // Input parameters here
             @Name("alias")      String alias,
             @Name("alias_node") String alias_node,
-            @Name("item_head")   List<String> item_head,
+            @Name("item_head")   List<Map<String, Object>> item_head,
             @Name("item_body")   List<String> item_body,
             @Name("support")    Number support,
             @Name("confidence") Number confidence
@@ -33,6 +34,7 @@ public class MineGraphRule {
         Long transactions = tr.get_number_of_transactions(db, alias_node);
 
         // 2. Count item-sets head
+        Item itemhead = new Item(item_head);
 
         // 3. Count item-sets body
 
