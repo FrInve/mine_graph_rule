@@ -6,57 +6,69 @@ import java.util.HashMap;
 public class ItemPath {
 
 
+    private final String prefixAlias;
+
+
     public static enum ItemType {HEAD, BODY};
 
     private final ArrayList<HashMap<String, String>> path;
-    //private ItemType itemMode;
 
 
     public ItemPath(ArrayList<HashMap<String, String>> item_path, ItemType itemMode){
         this.path = item_path;
-        //this.itemMode = itemMode;
+        switch(itemMode){
+            case HEAD:
+                this.prefixAlias = "head";
+            break;
+            case BODY:
+                this.prefixAlias = "body";
+            break;
+            default:
+                this.prefixAlias = "";
+        };
     }
 
     public String toCypher() {
-        StringBuilder query = new StringBuilder();
+        String query = "";
         for (HashMap<String, String> element : this.path) {
-            if (element.get("rel_type").equals("normal")){
-                //switch(this.type){
-                  //  case ItemType.HEAD:
-                query.append("-[")
-                        .append(element.get("rel_alias"))
-                        .append(":")
-                        .append(element.get("rel_type"))
-                        .append("]-(")
-                        .append(element.get("end_node_alias"))
-                        .append(":")
-                        .append(element.get("end_node"))
-                        .append(")");
-                //break;
-                   // case ItemType.BODY:
+            switch(element.get("type")) {
+                case "normal":
+                    query += toCypherNormal(element);
+                    break;
+                default:
+                    query += "";
+            }} // Add her rel_type count-any-shortest
+        return query;
+    }
 
-                      //  break;
-                    //default:
-                      //  throw new IllegalStateException("Unexpected value: " + this.type);
-                }}
-    //} // Add her rel_type count-any-shortest
-        return query.toString();
+    public String toCypherNormal(HashMap<String, String> element) {
+        return "-[" +
+                element.get("rel_alias") +
+                ":" +
+                element.get("rel_type") +
+                "]-(" +
+                element.get("end_node_alias") +
+                ":" +
+                element.get("end_node") +
+                ")";
     }
 
     public String getStringVariable() {
-        StringBuilder query = new StringBuilder();
+        StringBuilder stringVariables = new StringBuilder();
         for (HashMap<String, String> element : this.path) {
-            if (element.get("rel_type").equals("normal"))
-                query.append("-[")
-                        .append(element.get("rel_alias"))
-                        .append(":")
-                        .append(element.get("rel_type"))
-                        .append("]-(")
-                        .append(element.get("end_node_alias"))
-                        .append(":")
-                        .append(element.get("end_node"))
-                        .append(")");
-        } // Add her rel_type count-any-shortest
-
+            switch(element.get("type")) {
+                case "normal":
+                    stringVariables.append(element.get("end_node_alias"))
+                            .append(".id as ")
+                            .append(this.prefixAlias)
+                            .append("_")
+                            .append(element.get("rel_alias"))
+                            .append("_")
+                            .append(element.get("end_node_alias"))
+                            .append(", ");
+                    break;
+            }} // Add her rel_type count-any-shortest
+        String variables = stringVariables.toString();
+        return variables.substring(0, variables.length() - 2);
     }
 }
