@@ -8,7 +8,6 @@ public class ItemPath {
 
     private final String prefixAlias;
 
-
     public static enum ItemType {HEAD, BODY};
 
     private final ArrayList<HashMap<String, String>> path;
@@ -71,4 +70,22 @@ public class ItemPath {
         String variables = stringVariables.toString();
         return variables.substring(0, variables.length() - 2);
     }
+
+    public String getStringAlias() {
+        StringBuilder stringVariables = new StringBuilder();
+        for (HashMap<String, String> element : this.path) {
+            switch(element.get("type")) {
+                case "normal":
+                    stringVariables.append(this.prefixAlias)
+                            .append("_")
+                            .append(element.get("rel_alias"))
+                            .append("_")
+                            .append(element.get("end_node_alias"))
+                            .append(", ");
+                    break;
+            }} // Add her rel_type count-any-shortest
+        String variables = stringVariables.toString();
+        return variables.substring(0, variables.length() - 2);
+    }
+
 }
