@@ -14,7 +14,8 @@ public class Item {
     public Item(Map<String, Object> item, ItemPath.ItemType itemMode) {
         int numMax = (Integer) item.get("num_max");
         int numMin = (Integer) item.get("num_min");
-        this.itemPath = new ItemPath(item.get("item_path"), itemMode);
+        this.itemPath = new ItemPath((ArrayList<HashMap<String, String>>) item.get("item_path"),
+                itemMode);
     }
 
     public String toCypherMatch() {
