@@ -25,11 +25,17 @@ public class Item {
     }
 
     public String toCypherReturn(String otherAlias) {
-        return toCypherMatch() + "\nRETURN alias, " + otherAlias + ", " + this.itemPath.getStringVariable();
+        if (otherAlias == "") {
+            return toCypherMatch() + "\nRETURN alias, " + this.itemPath.getStringVariable();}
+        else {
+            return toCypherMatch() + "\nRETURN alias, " + otherAlias + ", " + this.itemPath.getStringVariable();}
     }
 
     public String toCypherWith(String otherAlias) {
-        return toCypherMatch() + "\nWITH alias, " + otherAlias + ", " + this.itemPath.getStringVariable();
+        if (otherAlias == "") {
+            return toCypherMatch() + "\nWITH alias, " + this.itemPath.getStringVariable();}
+        else {
+            return toCypherMatch() + "\nWITH alias, " + otherAlias + ", " + this.itemPath.getStringVariable();}
     }
 
     public String getAliasString(){
