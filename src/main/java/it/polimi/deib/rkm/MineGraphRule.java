@@ -34,7 +34,7 @@ public class MineGraphRule {
         Long transactions = tr.get_number_of_transactions(db, alias_node);
 
         // 2. Count item-sets head
-        Item itemhead = new Item((Map<String, Object>) item_head);
+//        Item itemhead = new Item((Map<String, Object>) item_head);
 
         // 3. Count item-sets body
 
