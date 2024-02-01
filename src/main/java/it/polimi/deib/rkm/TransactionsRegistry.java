@@ -9,12 +9,17 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class TransactionsRegistry {
 
     private Table tableBody;
     private Table tableRule;
+
+
 
     public TransactionsRegistry(){
         this.tableBody = Table.create("body").addColumns(
@@ -29,15 +34,29 @@ public class TransactionsRegistry {
         );
     }
 
-    private void retrieveBodies(GraphDatabaseService db, ItemSet itemBody){
-//        // Retrieve bodies from db and store them somewhere
-//        try(Transaction tx = db.beginTx()){
-//            StringBuilder sb = new StringBuilder();
+    private void retrieveBodies(GraphDatabaseService db, String query){
+        // Retrieve bodies from db and store them somewhere
+        ArrayList<Map<String, Object>> bodies = new ArrayList<>();
+        try(Transaction tx = db.beginTx()){
+            try( Result result = tx.execute(query)) {
+                while (result.hasNext()) {
+                    Map<String, Object> row = result.next();
+                    HashMap<String, Object> materializedRow = new HashMap<>();
+                    for (String key : result.columns()) {
+                        materializedRow.put(key, row.get(key));
+                    }
+                    bodies.add(materializedRow);
+                }
+            }
+        }
+ //       if(bodies.size()>0) {
+        //           for (String key : bodies.get(0)) {
 //
-//            sb.append()
-//            Result result = tx.execute()
-//        }
+        //           }
+        //     }
     }
+
+
 
     private void retrieveRules(GraphDatabaseService db, ItemSet itemBody, ItemSet itemHead){
 
