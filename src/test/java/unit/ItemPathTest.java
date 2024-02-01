@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -57,7 +59,7 @@ public class ItemPathTest {
 
         ItemPath ip = new ItemPath(itemList, ItemPath.ItemType.HEAD);
         String actual =  ip.getStringVariable();
-        String expected = "b.id as head_buy_b, g.id as head_of_g";
+        String expected = "b.id as head_BUY_Book, g.id as head_OF_Genre";
         assertThat(actual).isEqualTo(expected);
     }
 

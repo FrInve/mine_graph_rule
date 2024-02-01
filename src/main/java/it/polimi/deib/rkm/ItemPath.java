@@ -61,9 +61,9 @@ public class ItemPath {
                             .append(".id as ")
                             .append(this.prefixAlias)
                             .append("_")
-                            .append(element.get("rel_alias"))
+                            .append(element.get("rel_type"))
                             .append("_")
-                            .append(element.get("end_node_alias"))
+                            .append(element.get("end_node"))
                             .append(", ");
                     break;
             }} // Add her rel_type count-any-shortest
@@ -78,9 +78,9 @@ public class ItemPath {
                 case "normal":
                     stringVariables.append(this.prefixAlias)
                             .append("_")
-                            .append(element.get("rel_alias"))
+                            .append(element.get("rel_type"))
                             .append("_")
-                            .append(element.get("end_node_alias"))
+                            .append(element.get("end_node"))
                             .append(", ");
                     break;
             }} // Add her rel_type count-any-shortest
