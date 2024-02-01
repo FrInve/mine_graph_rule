@@ -61,6 +61,12 @@
             <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>tech.tablesaw</groupId>
+            <artifactId>tablesaw-core</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>
