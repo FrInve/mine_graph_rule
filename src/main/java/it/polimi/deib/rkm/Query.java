@@ -28,14 +28,14 @@ public class Query {
     public String toCypherForBody() {
         return "MATCH (n: " +
                 this.aliasNode +
-                ")\nWITH m as alias\n" +
+                ")\nWITH n as alias\n" +
                 this.body.toCypherReturn("");
     }
 
     public String toCypherForRule() {
         return "MATCH (n: " +
                 this.aliasNode +
-                ")\nWITH m as alias\n" +
+                ")\nWITH n as alias\n" +
                 this.head.toCypherWith("") +
                 "\n"+
                 this.body.toCypherReturn(this.body.getAliasString());

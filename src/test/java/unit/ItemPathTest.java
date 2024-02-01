@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -17,21 +15,21 @@ public class ItemPathTest {
     @Test
     void shouldGeneratePath(){
 
-        ArrayList itemList = new ArrayList();
-        HashMap itemMap = new HashMap();
+        ArrayList<HashMap<String, String>> itemList = new ArrayList<>();
+        HashMap<String, String> itemMap = new HashMap<>();
         itemMap.put("type", "normal");
         itemMap.put("rel_type", "BUY");
         itemMap.put("rel_alias", "buy");
         itemMap.put("end_node", "Book");
         itemMap.put("end_node_alias", "b");
         itemList.add(itemMap);
-        itemMap = new HashMap();
+        itemMap = new HashMap<>();
         itemMap.put("type", "normal");
         itemMap.put("rel_type", "OF");
         itemMap.put("rel_alias", "of");
         itemMap.put("end_node", "Genre");
         itemMap.put("end_node_alias", "g");
-        itemList.add(itemMap);;
+        itemList.add(itemMap);
 
         ItemPath ip = new ItemPath(itemList, ItemPath.ItemType.HEAD);
         String actual =  ip.toCypher();
@@ -41,21 +39,21 @@ public class ItemPathTest {
 
     @Test
     void shouldGenerateVariables(){
-        ArrayList itemList = new ArrayList();
-        HashMap itemMap = new HashMap();
+        ArrayList<HashMap<String, String>> itemList = new ArrayList<>();
+        HashMap<String, String> itemMap = new HashMap<>();
         itemMap.put("type", "normal");
         itemMap.put("rel_type", "BUY");
         itemMap.put("rel_alias", "buy");
         itemMap.put("end_node", "Book");
         itemMap.put("end_node_alias", "b");
         itemList.add(itemMap);
-        itemMap = new HashMap();
+        itemMap = new HashMap<>();
         itemMap.put("type", "normal");
         itemMap.put("rel_type", "OF");
         itemMap.put("rel_alias", "of");
         itemMap.put("end_node", "Genre");
         itemMap.put("end_node_alias", "g");
-        itemList.add(itemMap);;
+        itemList.add(itemMap);
 
         ItemPath ip = new ItemPath(itemList, ItemPath.ItemType.HEAD);
         String actual =  ip.getStringVariable();
@@ -64,7 +62,27 @@ public class ItemPathTest {
     }
 
     @Test
-    void shouldGenerateWithReturn(){
+    void shouldGenerateAliasString(){
+        ArrayList<HashMap<String, String>> itemList = new ArrayList<>();
+        HashMap<String, String> itemMap = new HashMap<>();
+        itemMap.put("type", "normal");
+        itemMap.put("rel_type", "BUY");
+        itemMap.put("rel_alias", "buy");
+        itemMap.put("end_node", "Book");
+        itemMap.put("end_node_alias", "b");
+        itemList.add(itemMap);
+        itemMap = new HashMap<>();
+        itemMap.put("type", "normal");
+        itemMap.put("rel_type", "OF");
+        itemMap.put("rel_alias", "of");
+        itemMap.put("end_node", "Genre");
+        itemMap.put("end_node_alias", "g");
+        itemList.add(itemMap);
+
+        ItemPath ip = new ItemPath(itemList, ItemPath.ItemType.HEAD);
+        String actual =  ip.getStringAlias();
+        String expected = "head_BUY_Book, head_OF_Genre";
+        assertThat(actual).isEqualTo(expected);
 
     }
 }
