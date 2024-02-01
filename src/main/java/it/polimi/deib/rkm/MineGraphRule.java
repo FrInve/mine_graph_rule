@@ -22,12 +22,12 @@ public class MineGraphRule {
             @Name("alias")      String alias,
             @Name("alias_node") String alias_node,
             @Name("item_head")   List<Map<String, Object>> item_head,
-            @Name("item_body")   List<String> item_body,
+            @Name("item_body")   List<Map<String, Object>> item_body,
             @Name("support")    Number support,
             @Name("confidence") Number confidence
             ) {
         // Procedure logic here
-
+        Query query = new Query(alias, alias_node, item_head, item_body, support.doubleValue(), confidence.doubleValue());
         // Create queries and retrieve data from Neo4j
         TransactionsRegistry tr = new TransactionsRegistry();
         // 1. Count number of transactions of alias_node

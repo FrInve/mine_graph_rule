@@ -9,7 +9,8 @@ public class ItemSet {
 
     private Item item;
 
-    public ItemSet(List<String> item_list) {
+    public ItemSet(List<Map<String, Object>> item_list, ItemPath.ItemType itemMode) {
+        this.item = new Item(item_list.get(0), itemMode);
 
     }
 
