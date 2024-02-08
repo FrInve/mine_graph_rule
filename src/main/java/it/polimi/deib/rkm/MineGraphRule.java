@@ -46,11 +46,16 @@ public class MineGraphRule {
         tr.computeMetrics(transactions);
 
         // Filter by support and confidence
-//        tr.filterBySupportAndConfidence();
+        tr.filterBySupportAndConfidence(support.doubleValue(), confidence.doubleValue());
+
         // Fill one AssociationRule as mockup return value
 
         List<Map<String, Object>> head = new ArrayList<>();
-        head.add(Map.of("type", "normal", "rel_type", "BUY", "rel_alias", "buy", "end_node", "Book", "end_node_alias", "b"));
+        head.add(Map.of("type", "normal",
+                "rel_type", "BUY",
+                "rel_alias", "buy",
+                "end_node", "Book",
+                "end_node_alias", "b"));
         return Stream.of(new AssociationRule(head, head, 0.5, 0.5)
                 .toRecord());
     }

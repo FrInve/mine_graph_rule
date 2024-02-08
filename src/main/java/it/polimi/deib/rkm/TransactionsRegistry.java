@@ -122,6 +122,7 @@ public class TransactionsRegistry {
                 break;
             }
         }
+        this.tableResults =
         this.tableResults = this.tableRule.joinOn(bodyColumn).inner(true, this.tableBody);
     }
 
@@ -138,7 +139,23 @@ public class TransactionsRegistry {
                 this.tableResults.longColumn("suppcount")
                         .asDoubleColumn()
                         .divide(this.tableResults.longColumn("T2.suppcount").asDoubleColumn())
+                        .setName("confidence_raw"));
+        // Apply ceiling of one to confidence column
+        this.tableResults.addColumns(
+                this.tableResults.doubleColumn("confidence_raw")
+                        .map((value) -> value > 1.0 ? 1.0 : value)
                         .setName("confidence"));
+        // Drop confidence_raw column
+        this.tableResults = this.tableResults.removeColumns("confidence_raw");
+    }
+
+public void filterBySupportAndConfidence(double minSupport, double minConfidence){
+        // Filter by support and confidence
+        // Store the results in tableResults
+        this.tableResults = this.tableResults.where(
+                this.tableResults.doubleColumn("support").isGreaterThanOrEqualTo(minSupport)
+                        .and(this.tableResults.doubleColumn("confidence")
+                                .isGreaterThanOrEqualTo(minConfidence)));
     }
 
 
