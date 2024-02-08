@@ -4,10 +4,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.procedure.*;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,44 +19,100 @@ public class TransactionsRegistry {
 
 
     public TransactionsRegistry(){
-        this.tableBody = Table.create("body").addColumns(
-                StringColumn.create("BodyItem0"),
-                LongColumn.create("SuppCountBody")
-        );
-        this.tableRule = Table.create("rules").addColumns(
-                StringColumn.create("HeadItem0"),
-                StringColumn.create("BodyItem0"),
-                LongColumn.create("SuppCountRule"),
-                DoubleColumn.create("Supp")
-        );
+        this.tableBody = Table.create("body");
+        this.tableRule = Table.create("rules");
     }
 
-    private void retrieveBodies(GraphDatabaseService db, String query){
+    public void retrieveBodies(GraphDatabaseService db, String query){
         // Retrieve bodies from db and store them somewhere
         ArrayList<Map<String, Object>> bodies = new ArrayList<>();
+        boolean setColumns = false;
         try(Transaction tx = db.beginTx()){
             try( Result result = tx.execute(query)) {
-                while (result.hasNext()) {
+                while (result.hasNext()) { // Iterate over the result rows
+
+                    if(!setColumns){ // Set columns only once
+                        for (String key : result.columns()) {
+                            if(key.equals("suppcount")){
+                                tableBody.addColumns(LongColumn.create(key));
+                            } else {
+                                tableBody.addColumns(StringColumn.create(key));
+                            }
+                        }
+                        setColumns = true;
+                    }
+
                     Map<String, Object> row = result.next();
                     HashMap<String, Object> materializedRow = new HashMap<>();
-                    for (String key : result.columns()) {
+
+                    for (String key : result.columns()) { // Iterate over the columns of the row
                         materializedRow.put(key, row.get(key));
                     }
                     bodies.add(materializedRow);
                 }
             }
         }
- //       if(bodies.size()>0) {
-        //           for (String key : bodies.get(0)) {
-//
-        //           }
-        //     }
+        if(!bodies.isEmpty()) {
+            for (Map<String, Object> body : bodies) {
+                Row row = tableBody.appendRow();
+                for (String key : body.keySet()) {
+                    if(key.equals("suppcount")){
+                        row.setLong(key, (Long) body.get(key));
+                    } else {
+                        row.setString(key, (String) body.get(key));
+                    }
+                }
+            }
+        }
     }
 
 
 
-    private void retrieveRules(GraphDatabaseService db, ItemSet itemBody, ItemSet itemHead){
+    public void retrieveRules(GraphDatabaseService db, String query){
+        // Retrieve rules from db and store them somewhere
+        ArrayList<Map<String, Object>> rules = new ArrayList<>();
+        boolean setColumns = false;
+        try(Transaction tx = db.beginTx()){
+            try( Result result = tx.execute(query)) {
+                while (result.hasNext()) { // Iterate over the result rows
 
+                    if(!setColumns){ // Set columns only once
+                        for (String key : result.columns()) {
+                            if(key.equals("suppcount")){
+                                tableRule.addColumns(LongColumn.create(key));
+                            } else {
+                                tableRule.addColumns(StringColumn.create(key));
+                            }
+                        }
+                        setColumns = true;
+                    }
+
+                    Map<String, Object> row = result.next();
+                    HashMap<String, Object> materializedRow = new HashMap<>();
+
+                    for (String key : result.columns()) { // Iterate over the columns of the row
+                        materializedRow.put(key, row.get(key));
+                    }
+                    rules.add(materializedRow);
+                }
+            }
+        }
+        if(!rules.isEmpty()) {
+            for (Map<String, Object> body : rules) {
+                Row row = tableRule.appendRow();
+                for (String key : body.keySet()) {
+                    if(key.equals("suppcount")){
+                        row.setLong(key, (Long) body.get(key));
+                    } else {
+                        row.setString(key, (String) body.get(key));
+                    }
+                }
+            }
+        }
+    }
+
+    public void combineRules(){
+        return;
     }
 
     @Context

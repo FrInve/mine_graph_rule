@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemSet {
+    // TODO: Remove this field
+    @Deprecated
     private ArrayList<Item> patters;
 
     private Item item;
@@ -14,6 +16,8 @@ public class ItemSet {
 
     }
 
+    // TODO: Remove this constructor
+    @Deprecated
     public ItemSet(Map<String, Object> single_item, ItemPath.ItemType itemMode) {
         this.item = new Item(single_item, itemMode);
     }
@@ -31,6 +35,7 @@ public class ItemSet {
     }
 
 
+    // TODO: Is this necessary? Or deprecated?
     public void addOne(Item item){
 
     }

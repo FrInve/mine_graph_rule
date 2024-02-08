@@ -74,15 +74,29 @@ class SmallShopTest {
         }
     }
 
+//    @Test
+//    void shouldMineGraphRules(){
+//        try(
+//                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+//                var session = driver.session()
+//        ) {
+//            // language=cypher
+//            session.run("""
+//                    CALL rkm.mineGraphRule("P", "Person", [{a:{b: "c", d: "e"}}, {c:"d"}], ["b"], 0.5, 0.5)
+//                    """)
+//                    .stream();
+//        }
+//    }
+
     @Test
-    void shouldMineGraphRules(){
+    void shouldMineSimpleRules(){
         try(
                 var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
                 var session = driver.session()
         ) {
             // language=cypher
             session.run("""
-                    CALL rkm.mineGraphRule("P", "Person", [{a:{b: "c", d: "e"}}, {c:"d"}], ["b"], 0.5, 0.5)
+                    CALL rkm.mineGraphRule("P", "Person", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], 0.5, 0.5)
                     """)
                     .stream();
         }

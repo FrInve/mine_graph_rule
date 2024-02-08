@@ -9,11 +9,13 @@ public class Item {
 
 
     private final ItemPath itemPath;
+    private int numMax;
+    private int numMin;
 
 
     public Item(Map<String, Object> item, ItemPath.ItemType itemMode) {
-        int numMax = (Integer) item.get("num_max");
-        int numMin = (Integer) item.get("num_min");
+        this.numMax = ((Long) item.get("num_max")).intValue();
+        this.numMin = ((Long) item.get("num_min")).intValue();
         this.itemPath = new ItemPath((ArrayList<HashMap<String, String>>) item.get("item_path"),
                 itemMode);
     }
@@ -26,9 +28,9 @@ public class Item {
 
     public String toCypherReturn(String otherAlias) {
         if (otherAlias == "") {
-            return toCypherMatch() + "\nRETURN len(collect(alias)) as suppcount, " + this.itemPath.getStringVariable();}
+            return toCypherMatch() + "\nRETURN size(collect(alias)) as suppcount, " + this.itemPath.getStringVariable();}
         else {
-            return toCypherMatch() + "\nRETURN len(collect(alias)) as suppcount, " + otherAlias + ", " + this.itemPath.getStringVariable();}
+            return toCypherMatch() + "\nRETURN size(collect(alias)) as suppcount, " + otherAlias + ", " + this.itemPath.getStringVariable();}
     }
 
     public String toCypherWith(String otherAlias) {

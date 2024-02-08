@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 public final class AssociationRule {
-    private ItemSet body;
-    private ItemSet head;
+    private List<Map<String, Object>> body;
+    private List<Map<String, Object>> head;
     private double support;
     private double confidence;
 
     public AssociationRule(
-            List<String> item_head,
-            List<String> item_body,
+            List<Map<String, Object>> head,
+            List<Map<String, Object>> body,
             double support,
             double confidence
             ) {
-        this.head = new ItemSet(item_head);
-        this.body = new ItemSet(item_body);
+        this.head = head;
+        this.body = body;
         this.support = support;
         this.confidence = confidence;
     }

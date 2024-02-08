@@ -33,21 +33,22 @@ public class MineGraphRule {
         // 1. Count number of transactions of alias_node
         Long transactions = tr.get_number_of_transactions(db, alias_node);
 
-        // 2. Count item-sets head
-//        Item itemhead = new Item((Map<String, Object>) item_head);
+        // 2. Retrieve and count bodies
+        tr.retrieveBodies(db, query.toCypherForBody());
 
-        // 3. Count item-sets body
+        // 3. Retrieve and count rules (head and body)
+        tr.retrieveRules(db, query.toCypherForRule());
 
-        // 4. Compute confidence
+        // 4. Join rules with bodies
+        tr.combineRules();
 
-        // 5. Compute support
-
+        // 5. Compute confidence and support
+        //tr.computeMetrics();
         // Fill one AssociationRule as mockup return value
-        ArrayList<String> foo = new ArrayList<>();
-        foo.add("a");
-        ArrayList<String> bar = new ArrayList<>();
-        foo.add("b");
-        return Stream.of(new AssociationRule(foo, bar, 0.5, 0.5)
+
+        List<Map<String, Object>> head = new ArrayList<>();
+        head.add(Map.of("type", "normal", "rel_type", "BUY", "rel_alias", "buy", "end_node", "Book", "end_node_alias", "b"));
+        return Stream.of(new AssociationRule(head, head, 0.5, 0.5)
                 .toRecord());
     }
 

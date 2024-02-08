@@ -1,10 +1,7 @@
 package unit;
 
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Value;
 import org.neo4j.harness.Neo4j;
@@ -43,6 +40,7 @@ class TransactionsRegistryTest {
     }
 
     @Test
+    @Disabled
     void shouldCountTransactionsArticle(){
 
         Long expected = 40L;

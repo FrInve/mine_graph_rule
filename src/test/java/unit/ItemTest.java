@@ -29,8 +29,8 @@ public class ItemTest {
         itemMap.put("end_node_alias", "g");
         itemList.add(itemMap);
         HashMap<String, Object> itemSetMap = new HashMap<>();
-        itemSetMap.put("num_min", 1);
-        itemSetMap.put("num_max", 1);
+        itemSetMap.put("num_min", 1L);
+        itemSetMap.put("num_max", 1L);
         itemSetMap.put("item_path", itemList);
 
         Item i = new Item(itemSetMap, ItemPath.ItemType.HEAD);
@@ -57,16 +57,16 @@ public class ItemTest {
         itemMap.put("end_node_alias", "g");
         itemList.add(itemMap);
         HashMap<String, Object> itemSetMap = new HashMap<>();
-        itemSetMap.put("num_min", 1);
-        itemSetMap.put("num_max", 1);
+        itemSetMap.put("num_min", 1L);
+        itemSetMap.put("num_max", 1L);
         itemSetMap.put("item_path", itemList);
 
         Item i = new Item(itemSetMap, ItemPath.ItemType.HEAD);
         String actualEmpty =  i.toCypherReturn("");
-        String expectedEmpty = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN len(collect(alias)) as suppcount, b.id as head_BUY_Book, g.id as head_OF_Genre";
+        String expectedEmpty = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(alias)) as suppcount, b.id as head_BUY_Book, g.id as head_OF_Genre";
         assertThat(actualEmpty).isEqualTo(expectedEmpty);
         String actual=  i.toCypherReturn("body_BUY_Book");
-        String expected = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN len(collect(alias)) as suppcount, body_BUY_Book, b.id as head_BUY_Book, g.id as head_OF_Genre";
+        String expected = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(alias)) as suppcount, body_BUY_Book, b.id as head_BUY_Book, g.id as head_OF_Genre";
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -89,8 +89,8 @@ public class ItemTest {
         itemMap.put("end_node_alias", "g");
         itemList.add(itemMap);
         HashMap<String, Object> itemSetMap = new HashMap<>();
-        itemSetMap.put("num_min", 1);
-        itemSetMap.put("num_max", 1);
+        itemSetMap.put("num_min", 1L);
+        itemSetMap.put("num_max", 1L);
         itemSetMap.put("item_path", itemList);
 
         Item i = new Item(itemSetMap, ItemPath.ItemType.HEAD);
