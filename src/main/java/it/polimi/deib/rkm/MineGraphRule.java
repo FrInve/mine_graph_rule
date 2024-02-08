@@ -43,7 +43,10 @@ public class MineGraphRule {
         tr.combineRules();
 
         // 5. Compute confidence and support
-        //tr.computeMetrics();
+        tr.computeMetrics(transactions);
+
+        // Filter by support and confidence
+//        tr.filterBySupportAndConfidence();
         // Fill one AssociationRule as mockup return value
 
         List<Map<String, Object>> head = new ArrayList<>();

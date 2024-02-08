@@ -15,6 +15,7 @@ public class TransactionsRegistry {
 
     private Table tableBody;
     private Table tableRule;
+    private Table tableResults;
 
 
 
@@ -112,8 +113,34 @@ public class TransactionsRegistry {
     }
 
     public void combineRules(){
-        return;
+        // Combine rules and bodies
+        // Store the results in tableResults
+        String bodyColumn = "";
+        for(String key : this.tableBody.columnNames()){
+            if(key.contains("body")){
+                bodyColumn = key;
+                break;
+            }
+        }
+        this.tableResults = this.tableRule.joinOn(bodyColumn).inner(true, this.tableBody);
     }
+
+    public void computeMetrics(Long totalTransactions){
+        // Compute confidence and support
+        // Store the results in tableResults
+        // support = suppcount_rule / totalTransactions
+        // confidence = suppcount_rule / suppcount_body
+        this.tableResults.addColumns(
+                this.tableResults.longColumn("suppcount")
+                        .asDoubleColumn()
+                        .divide(totalTransactions)
+                        .setName("support"),
+                this.tableResults.longColumn("suppcount")
+                        .asDoubleColumn()
+                        .divide(this.tableResults.longColumn("T2.suppcount").asDoubleColumn())
+                        .setName("confidence"));
+    }
+
 
     @Context
     public GraphDatabaseService db;
