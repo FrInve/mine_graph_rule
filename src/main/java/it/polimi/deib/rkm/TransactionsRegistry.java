@@ -149,15 +149,24 @@ public class TransactionsRegistry {
         this.tableResults = this.tableResults.removeColumns("confidence_raw");
     }
 
-public void filterBySupportAndConfidence(double minSupport, double minConfidence){
-        // Filter by support and confidence
-        // Store the results in tableResults
-        this.tableResults = this.tableResults.where(
-                this.tableResults.doubleColumn("support").isGreaterThanOrEqualTo(minSupport)
-                        .and(this.tableResults.doubleColumn("confidence")
-                                .isGreaterThanOrEqualTo(minConfidence)));
-    }
+    public void filterBySupportAndConfidence(double minSupport, double minConfidence){
+            // Filter by support and confidence
+            // Store the results in tableResults
+            this.tableResults = this.tableResults.where(
+                    this.tableResults.doubleColumn("support").isGreaterThanOrEqualTo(minSupport)
+                            .and(this.tableResults.doubleColumn("confidence")
+                                    .isGreaterThanOrEqualTo(minConfidence)));
+        }
 
+    public Stream<AssociationRule.AssociationRuleRecord> getResults(){
+        return this.tableResults.stream().map(row->
+            new AssociationRule.AssociationRuleRecord(
+                    row.getString(1),
+                    row.getString(2),
+                    row.getDouble("support"),
+                    row.getDouble("confidence"))
+        );
+    }
 
     @Context
     public GraphDatabaseService db;

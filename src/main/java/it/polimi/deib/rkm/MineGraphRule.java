@@ -50,14 +50,15 @@ public class MineGraphRule {
 
         // Fill one AssociationRule as mockup return value
 
-        List<Map<String, Object>> head = new ArrayList<>();
-        head.add(Map.of("type", "normal",
-                "rel_type", "BUY",
-                "rel_alias", "buy",
-                "end_node", "Book",
-                "end_node_alias", "b"));
-        return Stream.of(new AssociationRule(head, head, 0.5, 0.5)
-                .toRecord());
+//        List<Map<String, Object>> head = new ArrayList<>();
+//        head.add(Map.of("type", "normal",
+//                "rel_type", "BUY",
+//                "rel_alias", "buy",
+//                "end_node", "Book",
+//                "end_node_alias", "b"));
+//        return Stream.of(new AssociationRule(head, head, 0.5, 0.5)
+//                .toRecord());
+        return tr.getResults();
     }
 
 }

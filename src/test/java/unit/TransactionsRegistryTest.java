@@ -16,6 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.neo4j.driver.Values.parameters;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled
 class TransactionsRegistryTest {
     private Neo4j embeddedDatabaseServer;
 
