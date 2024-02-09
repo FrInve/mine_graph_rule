@@ -28,9 +28,9 @@ public class Item {
 
     public String toCypherReturn(String otherAlias) {
         if (otherAlias == "") {
-            return toCypherMatch() + "\nRETURN size(collect(alias)) as suppcount, " + this.itemPath.getStringVariable();}
+            return toCypherMatch() + "\nRETURN size(collect(DISTINCT alias)) as suppcount, " + this.itemPath.getStringVariable();}
         else {
-            return toCypherMatch() + "\nRETURN size(collect(alias)) as suppcount, " + otherAlias + ", " + this.itemPath.getStringVariable();}
+            return toCypherMatch() + "\nRETURN size(collect(DISTINCT alias)) as suppcount, " + otherAlias + ", " + this.itemPath.getStringVariable();}
     }
 
     public String toCypherWith(String otherAlias) {
