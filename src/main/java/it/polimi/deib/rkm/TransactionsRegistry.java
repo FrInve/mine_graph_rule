@@ -8,6 +8,7 @@ import tech.tablesaw.api.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -164,7 +165,8 @@ public class TransactionsRegistry {
                     row.getString(1),
                     row.getString(2),
                     row.getDouble("support"),
-                    row.getDouble("confidence"))
+                    row.getDouble("confidence"),
+                    List.of(row.columnNames().get(1), row.columnNames().get(2)))
         );
     }
 

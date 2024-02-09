@@ -21,13 +21,14 @@ public final class AssociationRule {
         this.confidence = confidence;
     }
 
-    public AssociationRuleRecord toRecord(){
-        return new AssociationRuleRecord(
-                this.head.toString(),
-                this.body.toString(),
-                this.support,
-                this.confidence);
-    }
+//    public AssociationRuleRecord toRecord(){
+//        return new AssociationRuleRecord(
+//                this.head.toString(),
+//                this.body.toString(),
+//                this.support,
+//                this.confidence,
+//                List.of());
+//    }
 
 
     /**
@@ -40,30 +41,32 @@ public final class AssociationRule {
      * be one of the following types:
      *
      * <ul>
-     *     <li>{@link String}</li>
-     *     <li>{@link Long} or {@code long}</li>
-     *     <li>{@link Double} or {@code double}</li>
-     *     <li>{@link Number}</li>
-     *     <li>{@link Boolean} or {@code boolean}</li>
-     *     <li>{@link Node}</li>
-     *     <li>{@link org.neo4j.graphdb.Relationship}</li>
-     *     <li>{@link org.neo4j.graphdb.Path}</li>
-     *     <li>{@link Map} with key {@link String} and value {@link Object}</li> - Keys dont have quotes in Cypher!
-     *     <li>{@link List} of elements of any valid field type, including {@link List}</li>
-     *     <li>{@link Object}, meaning any of the valid field types</li>
+     *     <li>{String}</li>
+     *     <li>{Long} or {@code long}</li>
+     *     <li>{Double} or {@code double}</li>
+     *     <li>{Number}</li>
+     *     <li>{Boolean} or {@code boolean}</li>
+     *     <li>{Node}</li>
+     *     <li>{org.neo4j.graphdb.Relationship}</li>
+     *     <li>{org.neo4j.graphdb.Path}</li>
+     *     <li>{Map} with key {String} and value {Object}</li> - Keys dont have quotes in Cypher!
+     *     <li>{List} of elements of any valid field type, including {List}</li>
+     *     <li>{Object}, meaning any of the valid field types</li>
      * </ul>
      */
     public static class AssociationRuleRecord {
-        public double confidence;
-        public double support;
+        public List<String> rule;
         public String head;
         public String body;
+        public double confidence;
+        public double support;
 
-        public AssociationRuleRecord(String head, String body, double support, double confidence){
+        public AssociationRuleRecord(String head, String body, double support, double confidence, List<String> rule){
             this.confidence = confidence;
             this.support = support;
             this.head = head;
             this.body = body;
+            this.rule = rule;
         }
 
     }
