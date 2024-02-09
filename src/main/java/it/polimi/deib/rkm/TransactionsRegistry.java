@@ -168,24 +168,24 @@ public class TransactionsRegistry {
         );
     }
 
-    @Context
-    public GraphDatabaseService db;
-
-    @Procedure(name="rkm.asm.getNumberOfTransactions", mode=Mode.READ)
-    @Description("CALL rkm.asm.getNumberOfTransactions(alias_node)")
-    public Stream<TransactionsCount> getNumberOfTransactions(
-            @Name("alias_node") String alias_node
-    ){
-        TransactionsCount transactionsCount = new TransactionsCount(this.get_number_of_transactions(db, alias_node));
-        return Stream.of(transactionsCount);
-    }
-
-    public static class TransactionsCount {
-        public Long count;
-        public TransactionsCount(Long count){
-            this.count = count;
-        }
-    }
+//    @Context
+//    public GraphDatabaseService db;
+//
+//    @Procedure(name="rkm.asm.getNumberOfTransactions", mode=Mode.READ)
+//    @Description("CALL rkm.asm.getNumberOfTransactions(alias_node)")
+//    public Stream<TransactionsCount> getNumberOfTransactions(
+//            @Name("alias_node") String alias_node
+//    ){
+//        TransactionsCount transactionsCount = new TransactionsCount(this.get_number_of_transactions(db, alias_node));
+//        return Stream.of(transactionsCount);
+//    }
+//
+//    public static class TransactionsCount {
+//        public Long count;
+//        public TransactionsCount(Long count){
+//            this.count = count;
+//        }
+//    }
 
 
     // Internal method
