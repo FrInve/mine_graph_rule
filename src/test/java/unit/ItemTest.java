@@ -63,10 +63,10 @@ public class ItemTest {
 
         Item i = new Item(itemSetMap, ItemPath.ItemType.HEAD);
         String actualEmpty =  i.toCypherReturn("");
-        String expectedEmpty = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(alias)) as suppcount, b.id as head_BUY_Book, g.id as head_OF_Genre";
+        String expectedEmpty = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(DISTINCT alias)) as suppcount, b.id as head_BUY_Book, g.id as head_OF_Genre";
         assertThat(actualEmpty).isEqualTo(expectedEmpty);
         String actual=  i.toCypherReturn("body_BUY_Book");
-        String expected = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(alias)) as suppcount, body_BUY_Book, b.id as head_BUY_Book, g.id as head_OF_Genre";
+        String expected = "MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(DISTINCT alias)) as suppcount, body_BUY_Book, b.id as head_BUY_Book, g.id as head_OF_Genre";
         assertThat(actual).isEqualTo(expected);
     }
 

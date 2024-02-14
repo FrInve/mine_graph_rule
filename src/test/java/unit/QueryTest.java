@@ -54,7 +54,7 @@ public class QueryTest {
                 0.5);
 
         String actual = query.toCypherForBody();
-        String expected = "MATCH (n:Person)\nWITH n as alias\nMATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(alias)) as suppcount, b.id as body_BUY_Book, g.id as body_OF_Genre";
+        String expected = "MATCH (n:Person)\nWITH n as alias\nMATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(DISTINCT alias)) as suppcount, b.id as body_BUY_Book, g.id as body_OF_Genre";
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -99,7 +99,7 @@ public class QueryTest {
                 0.5);
 
         String actual = query.toCypherForRule();
-        String expected = "MATCH (n:Person)\nWITH n as alias\nMATCH (alias)-[buy:BUY]-(b:Book)\nWITH alias, b.id as head_BUY_Book\nMATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(alias)) as suppcount, head_BUY_Book, b.id as body_BUY_Book, g.id as body_OF_Genre";
+        String expected = "MATCH (n:Person)\nWITH n as alias\nMATCH (alias)-[buy:BUY]-(b:Book)\nWITH alias, b.id as head_BUY_Book\nMATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)\nRETURN size(collect(DISTINCT alias)) as suppcount, head_BUY_Book, b.id as body_BUY_Book, g.id as body_OF_Genre";
         assertThat(actual).isEqualTo(expected);
 
     }
