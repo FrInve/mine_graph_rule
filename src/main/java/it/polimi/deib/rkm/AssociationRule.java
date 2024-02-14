@@ -1,34 +1,75 @@
 package it.polimi.deib.rkm;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class AssociationRule {
-    private List<Map<String, Object>> body;
-    private List<Map<String, Object>> head;
-    private double support;
-    private double confidence;
+    private Map<String, Object> body;
+    private Map<String, Object> head;
+    private Double support;
+    private Double confidence;
 
-    public AssociationRule(
-            List<Map<String, Object>> head,
-            List<Map<String, Object>> body,
-            double support,
-            double confidence
-            ) {
-        this.head = head;
-        this.body = body;
-        this.support = support;
-        this.confidence = confidence;
+    private AssociationRule() {
+        this.head = new HashMap<>();
+        this.body = new HashMap<>();
+        this.confidence = 0.0;
+        this.support = 0.0;
     }
 
-//    public AssociationRuleRecord toRecord(){
-//        return new AssociationRuleRecord(
-//                this.head.toString(),
-//                this.body.toString(),
-//                this.support,
-//                this.confidence,
-//                List.of());
-//    }
+    private AssociationRule(AssociationRuleBuilder builder) {
+        this.head = builder.head;
+        this.body = builder.body;
+        this.confidence = builder.confidence;
+        this.support = builder.support;
+    }
+
+    public static class AssociationRuleBuilder {
+        private Map<String, Object> head;
+        private Map<String, Object> body;
+        private Double support;
+        private Double confidence;
+
+        public AssociationRuleBuilder() {
+            this.head = new HashMap<>();
+            this.body = new HashMap<>();
+            this.support = 0.0;
+            this.confidence = 0.0;
+        }
+
+        public AssociationRuleBuilder setSupport(Double support) {
+            this.support = support;
+            return this;
+        }
+
+        public AssociationRuleBuilder setConfidence(Double confidence) {
+            this.confidence = confidence;
+            return this;
+        }
+
+        public AssociationRuleBuilder addHead(String itemName, String item){
+            itemName = itemName.replace("head_", "");
+            this.head.put(itemName, item);
+            return this;
+        }
+
+        public AssociationRuleBuilder addBody(String itemName, String item){
+            itemName = itemName.replace("body_", "");
+            this.body.put(itemName, item);
+            return this;
+        }
+
+        public AssociationRule build(){
+            return new AssociationRule(this);
+        }
+
+
+    }
+
+    public Record toRecord(){
+        return new Record(this);
+    }
+
 
 
     /**
@@ -54,19 +95,17 @@ public final class AssociationRule {
      *     <li>{Object}, meaning any of the valid field types</li>
      * </ul>
      */
-    public static class AssociationRuleRecord {
-        public List<String> rule;
-        public String head;
-        public String body;
+    public static class Record {
+        public Map<String,Object> head;
+        public Map<String,Object> body;
         public double confidence;
         public double support;
 
-        public AssociationRuleRecord(String head, String body, double support, double confidence, List<String> rule){
-            this.confidence = confidence;
-            this.support = support;
-            this.head = head;
-            this.body = body;
-            this.rule = rule;
+        public Record(AssociationRule rule){
+            this.confidence = rule.confidence;
+            this.support = rule.support;
+            this.head = rule.head;
+            this.body = rule.body;
         }
 
     }

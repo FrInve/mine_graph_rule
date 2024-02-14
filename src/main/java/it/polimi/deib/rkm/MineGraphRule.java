@@ -1,6 +1,5 @@
 package it.polimi.deib.rkm;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -15,9 +14,9 @@ public class MineGraphRule {
     @Context
     public GraphDatabaseService db;
 
-    @Procedure(name = "rkm.mineGraphRule", mode=Mode.READ)
+    @Procedure(name = "apoc.mgr.mineGraphRule", mode=Mode.READ)
     @Description("Graph Association Rule Mining for Neo4j")
-    public Stream<AssociationRule.AssociationRuleRecord> mineGraphRule(
+    public Stream<AssociationRule.Record> mineGraphRule(
             // Input parameters here
             @Name("alias")      String alias,
             @Name("alias_node") String alias_node,

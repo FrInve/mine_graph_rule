@@ -3,7 +3,6 @@ package it.polimi.deib.rkm;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.procedure.*;
 import tech.tablesaw.api.*;
 
 import java.util.ArrayList;
@@ -123,7 +122,6 @@ public class TransactionsRegistry {
                 break;
             }
         }
-        this.tableResults =
         this.tableResults = this.tableRule.joinOn(bodyColumn).inner(true, this.tableBody);
     }
 
@@ -150,18 +148,50 @@ public class TransactionsRegistry {
                     this.tableResults.doubleColumn("support").isGreaterThanOrEqualTo(minSupport)
                             .and(this.tableResults.doubleColumn("confidence")
                                     .isGreaterThanOrEqualTo(minConfidence)));
-        }
-
-    public Stream<AssociationRule.AssociationRuleRecord> getResults(){
-        return this.tableResults.stream().map(row->
-            new AssociationRule.AssociationRuleRecord(
-                    row.getString(1),
-                    row.getString(2),
-                    row.getDouble("support"),
-                    row.getDouble("confidence"),
-                    List.of(row.columnNames().get(1), row.columnNames().get(2)))
-        );
     }
+
+
+    public Stream<AssociationRule.Record> getResults() {
+        List<String> headColumns = this.tableResults.columnNames().stream()
+                .filter(column -> column.contains("head"))
+                .toList();
+
+        List<String> bodyColumns = this.tableResults.columnNames().stream()
+                .filter(column -> column.contains("body"))
+                .toList();
+
+        return this.tableResults.stream().map(row->{
+            AssociationRule.AssociationRuleBuilder builder = new AssociationRule.AssociationRuleBuilder()
+                    .setSupport(row.getDouble("support"))
+                    .setConfidence(row.getDouble("confidence"));
+
+            headColumns.forEach(column -> builder.addHead(column, row.getString(column)));
+            bodyColumns.forEach(column -> builder.addBody(column, row.getString(column)));
+
+//            for(String column : row.columnNames()){
+//                if(column.contains("head")){
+//                    builder.addHead(column, row.getString(column));
+//                } else if(column.contains("body")){
+//                    builder.addBody(column, row.getString(column));
+//                }
+//            }
+            return builder.build().toRecord();
+        });
+    }
+
+
+
+//    public Stream<AssociationRule.Record> getResults(){
+//        return this.tableResults.stream().map(row->
+//            new AssociationRule.Record(
+//                    row.getString(1),
+//                    row.getString(2),
+//                    row.getDouble("support"),
+//                    row.getDouble("confidence"),
+//                    List.of(row.columnNames().get(1), row.columnNames().get(2)))
+//        );
+//    }
+
 
 //    @Context
 //    public GraphDatabaseService db;

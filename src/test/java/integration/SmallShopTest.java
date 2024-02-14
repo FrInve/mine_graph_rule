@@ -1,10 +1,7 @@
 package integration;
 
 import it.polimi.deib.rkm.MineGraphRule;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Value;
 import org.neo4j.harness.Neo4j;
@@ -96,7 +93,7 @@ class SmallShopTest {
         ) {
             // language=cypher
             session.run("""
-                    CALL rkm.mineGraphRule("P", "Person", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], 0.1, 0.5)
+                    CALL apoc.mgr.mineGraphRule("P", "Person", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], 0.1, 0.5)
                     """)
                     .stream();
         }
