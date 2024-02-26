@@ -28,7 +28,7 @@ public class QueryTest {
 
         List<Map<String, Object>> itemSetBodySerialized = List.of(      // Set body (only one item)
                 Map.of("num_min", 1L,
-                        "num_max", 1L,
+                        "num_max", 3L,
                         "item_path", itemPathBodySerialized));
 
         List<Map<String,String>> itemPathHeadSerialized = List.of(      // Set path of head
@@ -106,6 +106,63 @@ public class QueryTest {
         WITH alias, b.id as head_BUY_Book
         MATCH (alias)-[buy:BUY]-(b:Book)-[of:OF]-(g:Genre)
         RETURN size(collect(DISTINCT alias)) as suppcount, head_BUY_Book, b.id as body_BUY_Book, g.id as body_OF_Genre""";
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void shouldGenerateRuleForPaper(){
+        List<Map<String,String>> itemPathBodySerialized = List.of(      // Set path of body
+                Map.of("type", "normal",
+                        "rel_type", "Buy",
+                        "rel_alias", "buy",
+                        "end_node", "Item",
+                        "end_node_alias", "i"),
+                Map.of("type", "normal",
+                        "rel_type", "Of",
+                        "rel_alias", "of",
+                        "end_node", "Category",
+                        "end_node_alias", "c"));
+
+        List<Map<String, Object>> itemSetBodySerialized = List.of(      // Set body (only one item)
+                Map.of("num_min", 2L,
+                        "num_max", 3L,
+                        "item_path", itemPathBodySerialized)
+        );
+
+        List<Map<String,String>> itemPathHeadSerialized = List.of(      // Set path of head
+                Map.of("type", "normal",
+                        "rel_type", "Buy",
+                        "rel_alias", "buy",
+                        "end_node", "Item",
+                        "end_node_alias", "i"));
+
+        List<Map<String, Object>> itemSetHeadSerialized = List.of(      // Set head (only one item)
+                Map.of("num_min", 1L,
+                        "num_max", 2L,
+                        "item_path", itemPathHeadSerialized));
+
+        Query query = new Query("P",
+                "Person",
+                itemSetHeadSerialized,
+                itemSetBodySerialized,
+                0.5,
+                0.5);
+
+        String actual = query.toCypherForRule();
+        String expected = """
+MATCH (n:Person)
+WITH n as alias
+CALL{
+WITH alias
+MATCH (alias)-[buy:Buy]-(i:Item)
+RETURN alias as nestedAlias,apoc.coll.dropDuplicateNeighbors(apoc.coll.sort([i.id])) as head_Buy_Item
+UNION
+MATCH (alias)-[buy:Buy]-(i:Item)
+MATCH (alias)-[buy1:Buy]-(i1:Item)
+RETURN alias as nestedAlias,apoc.coll.dropDuplicateNeighbors(apoc.coll.sort([i.id, i1.id])) as head_Buy_Item}
+WITH nestedAlias as alias, head_Buy_Item
+MATCH (alias)-[buy:Buy]-(i:Item)-[of:Of]-(c:Category)
+RETURN size(collect(DISTINCT alias)) as suppcount, head_Buy_Item, apoc.coll.dropDuplicateNeighbors(apoc.coll.sort([i.id])) as body_Buy_Item, apoc.coll.dropDuplicateNeighbors(apoc.coll.sort([c.id])) as body_Of_Category""";
         assertThat(actual).isEqualTo(expected);
     }
 }

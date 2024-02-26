@@ -26,8 +26,8 @@ public class ItemSet {
         return this.item.toCypherReturn(otherAlias);
     }
 
-    public String toCypherWith(String otherAlias) {
-        return this.item.toCypherWith(otherAlias);
+    public String toCypherWith(String otherAlias, String alias, String aliasNode) {
+        return this.item.toCypherWith(otherAlias, alias, aliasNode);
     }
 
     public String getAliasString(){

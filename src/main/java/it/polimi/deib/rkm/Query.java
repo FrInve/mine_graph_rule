@@ -50,12 +50,25 @@ public class Query {
     }
 
     public String toCypherForRule() {
-        return "MATCH (n:" +
-                this.aliasNode +
-                ")\nWITH n as alias\n" +
-                this.head.toCypherWith("") +
-                "\n"+
-                this.body.toCypherReturn(this.head.getAliasString());
+//        return "MATCH (n:" +
+//                this.aliasNode +
+//                ")\nWITH n as alias\n" +
+//                this.head.toCypherWith("",this.alias,this.aliasNode) +
+//                "\n"+
+//                this.body.toCypherReturn(this.head.getAliasString());
+        String head = this.head.toCypherWith("", this.alias, this.aliasNode);
+        String body = this.body.toCypherReturn(this.head.getAliasString());
+        // Split body after each UNION and add head to each part
+        List<String> bodyParts = List.of(body.split("\nUNION\n"));
+
+        StringBuilder result = new StringBuilder();
+        result.append("MATCH (n:").append(this.aliasNode).append(")\nWITH n as alias\n");
+        result.append(head).append("\n").append(bodyParts.get(0));
+        for (String part : bodyParts.subList(1, bodyParts.size())) {
+            result.append("\nUNION\n")
+                    .append(head).append("\n").append(part).append("\n");
+        }
+        return result.toString();
     }
 
 }
