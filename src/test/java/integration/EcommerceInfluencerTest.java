@@ -10,6 +10,7 @@ import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Value;
 import org.neo4j.harness.Neo4j;
 import org.neo4j.harness.Neo4jBuilders;
+import org.neo4j.procedure.Procedure;
 
 import java.io.BufferedReader;
 import java.io.IOException;

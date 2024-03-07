@@ -4,58 +4,57 @@ import java.util.List;
 import java.util.Map;
 
 public class Query {
-    private String alias;
-    private String aliasNode;
-    private ItemSet body;
-    private ItemSet head;
-    private double support;
-    private double confidence;
+    private final String anchor;
+    private final String anchorLabel;
+    private final String anchorWhereClause;
+    private final PatternSet body;
+    private final PatternSet head;
+    private final double support;
+    private final double confidence;
 
     public Query(
-            String alias,
-            String aliasNode,
-            List<Map<String, Object>> item_head,
-            List<Map<String, Object>> item_body,
+            String anchor,
+            String anchorLabel,
+            String anchorWhereClause,
+            List<Map<String, Object>> serializedHead,
+            List<Map<String, Object>> serializedBody,
             double support,
             double confidence
     ) {
-        this.alias = alias;
-        this.aliasNode = aliasNode;
-        this.head = new ItemSet(item_head, ItemPath.ItemType.HEAD);
-        this.body = new ItemSet(item_body, ItemPath.ItemType.BODY);
+        this.anchor = anchor;
+        this.anchorLabel = anchorLabel;
+        this.anchorWhereClause = anchorWhereClause;
+        this.head = new Head(serializedHead);
+        this.body = new Body(serializedBody);
         this.support = support;
         this.confidence = confidence;
     }
-//    public Query(
-//            String alias,
-//            String aliasNode,
-//            Map<String, Object> item_head,
-//            Map<String, Object> item_body,
-//            double support,
-//            double confidence
-//    ) {
-//        this.alias = alias;
-//        this.aliasNode = aliasNode;
-//        this.head = new ItemSet(item_head, ItemPath.ItemType.HEAD);
-//        this.body = new ItemSet(item_body, ItemPath.ItemType.BODY);
-//        this.support = support;
-//        this.confidence = confidence;
-//    }
 
-    public String toCypherForBody() {
-        return "MATCH (n:" +
-                this.aliasNode +
-                ")\nWITH n as alias\n" +
-                this.body.toCypherReturn("");
+    public String getAnchor(){
+        return this.anchor;
     }
 
-    public String toCypherForRule() {
-        return "MATCH (n:" +
-                this.aliasNode +
-                ")\nWITH n as alias\n" +
-                this.head.toCypherWith("") +
-                "\n"+
-                this.body.toCypherReturn(this.head.getAliasString());
+    public String getAnchorLabel(){
+        return this.anchorLabel;
     }
 
+    public String getAnchorWhereClause(){
+        return this.anchorWhereClause;
+    }
+
+    public PatternSet getBody(){
+        return this.body;
+    }
+
+    public PatternSet getHead(){
+        return this.head;
+    }
+
+    public List<String> getRuleColumnNames(){
+        return List.of("a1","a2","suppcount");
+    }
+
+    public List<String> getBodyColumnNames(){
+        return List.of("a1","a2","suppcount");
+    }
 }
