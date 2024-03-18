@@ -3,13 +3,10 @@ package it.polimi.deib.rkm;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class RulesRegistry {
     private Table rules;
@@ -60,22 +57,69 @@ public class RulesRegistry {
     }
 
     public void retrieveBodies(GraphDatabaseService db){
-
+        visitedQueries.forEach(queryNode -> {
+            List<Map<String, Object>> bodies = new ArrayList<>();
+            try(Transaction tx = db.beginTx()){
+                Result result = tx.execute(queryNode.getBodyInCypher());
+                while(result.hasNext()){
+                    Map<String, Object> row = result.next();
+                    HashMap<String, Object> materializedRow = new HashMap<>();
+                    for (String key : result.columns()) {
+                        materializedRow.put(key, row.get(key));
+                    }
+                    bodies.add(materializedRow);
+                }
+                tx.commit();
+            }
+            if(!bodies.isEmpty()) {
+                for (Map<String, Object> body : bodies) {
+                    Row row = this.bodies.appendRow();
+                    for (String key : body.keySet()) {
+                        if(key.equals("suppcount")){
+                            row.setLong(key, (Long) body.get(key));
+                        } else {
+                            row.setString(key, (String) body.get(key));
+                        }
+                    }
+                }
+            }
+        });
     }
     public void retrieveRules(GraphDatabaseService db) {
         retrieveRulesHelper(db, treeOfQueries);
     }
 
     private void retrieveRulesHelper(GraphDatabaseService db, QueryNode queryNode){
-//        try(Transaction tx = db.beginTx()){
-//            Result result = tx.execute(queryNode.getRuleInCypher());
-//            while(result.hasNext()){
-//                // TODO: Add rule to rules table
-//            }
-//            tx.commit();
-//        }
-        System.out.println(queryNode.getRuleInCypher());
-        System.out.println();
+        List<Map<String, Object>> rules = new ArrayList<>();
+        try(Transaction tx = db.beginTx()){
+            Result result = tx.execute(queryNode.getRuleInCypher());
+            while(result.hasNext()){
+                Map<String, Object> row = result.next();
+                HashMap<String, Object> materializedRow = new HashMap<>();
+                for (String key : result.columns()) {
+                    materializedRow.put(key, row.get(key));
+                }
+                rules.add(materializedRow);
+            }
+//            tx.commit();  // This line was commented out in the original code
+        }
+        // Print for debug
+//        System.out.println(queryNode.getRuleInCypher());
+//        System.out.println();
+
+        if (!rules.isEmpty()) {
+            for (Map<String, Object> rule : rules) {
+                Row row = this.rules.appendRow();
+                for (String key : rule.keySet()) {
+                    if (key.equals("suppcount")) {
+                        row.setLong(key, (Long) rule.get(key));
+                    } else {
+                        row.setString(key, (String) rule.get(key));
+                    }
+                }
+            }
+        }
+
 
         // Generate children nodes
         queryNode.generateChildren();
@@ -90,4 +134,62 @@ public class RulesRegistry {
         }
     }
 
+    public void combineRules() {
+        // Combine rules and bodies
+        // Store the results in tableResults
+        String bodyColumn = "";
+        for(String key : this.bodies.columnNames()){
+            if(key.contains("body")){
+                bodyColumn = key;
+                break;
+            }
+        }
+        this.results = this.rules.joinOn(bodyColumn).inner(true, this.bodies);
+
+    }
+
+    public void computeMetrics(){
+        // Compute confidence and support
+        // Store the results in tableResults
+        // support = suppcount_rule / totalTransactions
+        // confidence = suppcount_rule / suppcount_body
+        this.results.addColumns(
+                this.results.longColumn("suppcount")
+                        .asDoubleColumn()
+                        .divide(transactionCount)
+                        .setName("support"),
+                this.results.longColumn("suppcount")
+                        .asDoubleColumn()
+                        .divide(this.results.longColumn("T2.suppcount").asDoubleColumn())
+                        .setName("confidence"));
+    }
+
+    public void filterBySupportAndConfidence(double minSupport, double minConfidence) {
+        // Filter by support and confidence
+        // Store the results in tableResults
+        this.results = this.results.where(
+                this.results.doubleColumn("support").isGreaterThanOrEqualTo(minSupport)
+                        .and(this.results.doubleColumn("confidence")
+                                .isGreaterThanOrEqualTo(minConfidence)));
+    }
+    public Stream<AssociationRule.Record> getResults() {
+        List<String> headColumns = this.results.columnNames().stream()
+                .filter(column -> column.contains("head"))
+                .toList();
+
+        List<String> bodyColumns = this.results.columnNames().stream()
+                .filter(column -> column.contains("body"))
+                .toList();
+
+        return this.results.stream().map(row -> {
+            AssociationRule.AssociationRuleBuilder builder = new AssociationRule.AssociationRuleBuilder()
+                    .setSupport(row.getDouble("support"))
+                    .setConfidence(row.getDouble("confidence"));
+
+            headColumns.forEach(column -> builder.addHead(column, row.getString(column)));
+            bodyColumns.forEach(column -> builder.addBody(column, row.getString(column)));
+
+            return builder.build().toRecord();
+        });
+    }
 }

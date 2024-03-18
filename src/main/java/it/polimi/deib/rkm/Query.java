@@ -1,5 +1,6 @@
 package it.polimi.deib.rkm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,10 +52,17 @@ public class Query {
     }
 
     public List<String> getRuleColumnNames(){
-        return List.of("a1","a2","suppcount");
+        List<String> columns = new ArrayList<>();
+        columns.addAll(head.getColumnNames("head"));
+        columns.addAll(body.getColumnNames("body"));
+        columns.add("suppcount");
+        return columns;
     }
 
     public List<String> getBodyColumnNames(){
-        return List.of("a1","a2","suppcount");
+        List<String> columns = new ArrayList<>(body.getColumnNames("body"));
+        columns.add("suppcount");
+        return columns;
     }
+
 }

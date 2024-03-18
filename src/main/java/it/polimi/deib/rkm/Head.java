@@ -31,4 +31,12 @@ public class Head extends PatternSet {
                 .forEach(i -> sb.append(this.getPatterns().get(i).getReturnVariables("head" + i)));
         return sb.toString();
     }
+
+    @Override
+    public List<String> getColumnNames(String prefix) {
+        List<String> columns = new ArrayList<>();
+        IntStream.range(0, this.getPatterns().size())
+                .forEach(i -> columns.addAll(this.getPatterns().get(i).getColumnNames(prefix + i)));
+        return columns;
+    }
 }

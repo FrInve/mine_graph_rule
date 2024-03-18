@@ -35,4 +35,8 @@ public abstract class PatternSet {
     }
 
     public abstract String getReturnVariables();
+
+    public abstract List<String> getColumnNames(String prefix);
 }
+
+

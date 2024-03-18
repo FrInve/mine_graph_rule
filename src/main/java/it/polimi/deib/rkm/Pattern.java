@@ -1,5 +1,7 @@
 package it.polimi.deib.rkm;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -45,6 +47,13 @@ public class Pattern {
         IntStream.range(0, num.intValue())
                 .forEach(i -> sb.append(patternTail.getReturnVariables(prefix, i)));
         return sb.toString();
+    }
+
+    public List<String> getColumnNames(String prefix) {
+        List<String> columns = new ArrayList<>();
+        IntStream.range(0, num.intValue())
+                .forEach(i -> columns.addAll(patternTail.getColumnNames(prefix, i)));
+        return columns;
     }
 }
 

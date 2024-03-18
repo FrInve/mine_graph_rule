@@ -16,9 +16,9 @@ public class Normal implements TailFragment {
     }
     public String toCypher(int iterationNumber){
         if (iterationNumber == 0) {
-            return "-[:" + relationshipType + "]-(" + nodeVariable + ":" + nodeLabel + ")";
+            return "-[:" + relationshipType + "]->(" + nodeVariable + ":" + nodeLabel + ")";
         }else{
-            return "-[:" + relationshipType + "]-(" + nodeVariable + iterationNumber + ":" + nodeLabel + ")";
+            return "-[:" + relationshipType + "]->(" + nodeVariable + iterationNumber + ":" + nodeLabel + ")";
 
         }
     }
@@ -46,5 +46,18 @@ public class Normal implements TailFragment {
                 .append(relationshipType).append("_")
                 .append(nodeVariable).append(iterationNumber);
         return sb.toString();
+    }
+
+    /**
+     * Return the variable name for the fragment
+     * @param prefix
+     * @param iterationNumber
+     * @return
+     */
+    public String getReturnVariable(String prefix, int iterationNumber){
+        if (iterationNumber == 0) {
+            return prefix + "_" + relationshipType + "_" + nodeLabel;
+        }
+        return prefix + "_" + relationshipType + "_" + nodeLabel + iterationNumber;
     }
 }
