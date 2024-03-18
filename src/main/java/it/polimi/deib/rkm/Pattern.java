@@ -1,16 +1,15 @@
 package it.polimi.deib.rkm;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
 public class Pattern {
-    private Long numMin;
-    private Long numMax;
-    private Long num;
-    private PatternTail patternTail;
+    private final Long numMin;
+    private final Long numMax;
+    private final Long num;
+    private final PatternTail patternTail;
 
     private Pattern(Long numMin, Long numMax, Long num, PatternTail patternTail){
         this.numMin = numMin;
@@ -51,7 +50,8 @@ public class Pattern {
 
     public List<String> getColumnNames(String prefix) {
         List<String> columns = new ArrayList<>();
-        IntStream.range(0, num.intValue())
+//        columns.addAll(patternTail.getColumnNames(prefix, numMax.intValue()));
+        IntStream.range(0, numMax.intValue())
                 .forEach(i -> columns.addAll(patternTail.getColumnNames(prefix, i)));
         return columns;
     }

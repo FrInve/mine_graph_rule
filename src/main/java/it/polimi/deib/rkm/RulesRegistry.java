@@ -9,12 +9,12 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class RulesRegistry {
-    private Table rules;
-    private Table bodies;
+    private final Table rules;
+    private final Table bodies;
     private Table results;
     private Long transactionCount;
     private QueryNode treeOfQueries;
-    private Set<QueryNode> visitedQueries;
+    private final Set<QueryNode> visitedQueries;
 
     public RulesRegistry(){
         this.rules = Table.create("rules");
@@ -137,14 +137,10 @@ public class RulesRegistry {
     public void combineRules() {
         // Combine rules and bodies
         // Store the results in tableResults
-        String bodyColumn = "";
-        for(String key : this.bodies.columnNames()){
-            if(key.contains("body")){
-                bodyColumn = key;
-                break;
-            }
-        }
-        this.results = this.rules.joinOn(bodyColumn).inner(true, this.bodies);
+        String[] bodyColumns = this.bodies.columnNames().stream()
+                .filter(column -> column.contains("body"))
+                .toArray(String[]::new);
+        this.results = this.rules.joinOn(bodyColumns).inner(true, this.bodies);
 
     }
 
