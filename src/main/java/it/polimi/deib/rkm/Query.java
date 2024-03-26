@@ -40,7 +40,10 @@ public class Query {
     }
 
     public String getAnchorWhereClause(){
-        return this.anchorWhereClause;
+        StringBuilder sb = new StringBuilder();
+        sb.append("WHERE ")
+                .append(this.anchorWhereClause);
+        return sb.toString();
     }
 
     public PatternSet getBody(){

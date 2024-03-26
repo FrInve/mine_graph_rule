@@ -72,7 +72,7 @@ public class QueryNode {
                 .append(anchorWhereClause)
                 .append("\n");
         }
-        sb.append("RETURN size(collect(DISTINCT ").append(anchor).append(")) as suppcount, ")
+        sb.append("RETURN count(DISTINCT ").append(anchor).append(") as suppcount, ")
                 .append(body.getReturnVariables())
                 .append(head.getReturnVariables())//.append(", ")
                 .delete(sb.length() - 2, sb.length());//.append("\n");
@@ -89,7 +89,7 @@ public class QueryNode {
                     .append(anchorWhereClause)
                     .append("\n");
         }
-        sb.append("RETURN size(collect(DISTINCT ").append(anchor).append(")) as suppcount, ")
+        sb.append("RETURN count(DISTINCT ").append(anchor).append(") as suppcount, ")
                 .append(body.getReturnVariables())
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
