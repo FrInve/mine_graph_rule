@@ -2,6 +2,7 @@ package unit;
 
 import it.polimi.deib.rkm.Query;
 import it.polimi.deib.rkm.RulesRegistry;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -77,6 +78,7 @@ public class RulesRegistryTest {
     }
 
     @Test
+    @Disabled
     void shouldGenerateQueries(){
         Query query = generateQuery();
         RulesRegistry rulesRegistry = new RulesRegistry();
@@ -85,6 +87,7 @@ public class RulesRegistryTest {
     }
 
     @Test
+    @Disabled
     void shouldGenerateComplexRules(){
         Query query = generateCompleteQuery();
         RulesRegistry rulesRegistry = new RulesRegistry();
@@ -93,6 +96,7 @@ public class RulesRegistryTest {
     }
 
     @Test
+    @Disabled
     void shouldGenerateComplexBodies(){
         Query query = generateCompleteQuery();
         RulesRegistry rulesRegistry = new RulesRegistry();

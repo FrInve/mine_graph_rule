@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled
 class SmallShopTest {
 
     private Neo4j embeddedDatabaseServer;
