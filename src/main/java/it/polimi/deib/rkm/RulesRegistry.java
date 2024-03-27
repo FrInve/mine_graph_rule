@@ -46,9 +46,17 @@ public class RulesRegistry {
     public void retrieveTransactionsCount(GraphDatabaseService db, Query query){
         try(Transaction tx = db.beginTx()){
 
-            Result result = tx.execute("MATCH (" + query.getAnchor() + ":" + query.getAnchorLabel() + ") "
-                    + "WHERE " + query.getAnchorWhereClause()
-                    + " RETURN count("+ query.getAnchor() +") AS count");
+            StringBuilder sb = new StringBuilder();
+            sb.append("MATCH (").append(query.getAnchor()).append(":").append(query.getAnchorLabel()).append(") ");
+            if(!query.getAnchorWhereClause().isEmpty()){
+                    sb.append("WHERE ").append(query.getAnchorWhereClause());
+            }
+            sb.append(" RETURN count(").append(query.getAnchor()).append(") AS count");
+
+            Result result = tx.execute(sb.toString());
+//            Result result = tx.execute("MATCH (" + query.getAnchor() + ":" + query.getAnchorLabel() + ") "
+//                    + "WHERE " + query.getAnchorWhereClause()
+//                    + " RETURN count("+ query.getAnchor() +") AS count");
             if(result.hasNext()) {
                 transactionCount = (Long) result.next().get("count");
                 tx.commit();
