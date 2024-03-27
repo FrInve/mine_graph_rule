@@ -28,15 +28,17 @@ public abstract class PatternSet {
 
     public abstract PatternSet cloneAndReplacePattern(int index, Pattern pattern);
 
-    public String getMatchClause(String anchor, String anchorType){
+    public String getMatchClause(String anchor){
         StringBuilder sb = new StringBuilder();
-        patterns.forEach(pattern -> sb.append(pattern.getMatchClause(anchor, anchorType)));
+        patterns.forEach(pattern -> sb.append(pattern.getMatchClause(anchor)));
         return sb.toString();
     }
 
+    public abstract String getWithVariables();
     public abstract String getReturnVariables();
 
     public abstract List<String> getColumnNames(String prefix);
+
 }
 
 

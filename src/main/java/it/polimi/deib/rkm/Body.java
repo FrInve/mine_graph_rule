@@ -24,6 +24,14 @@ public class Body extends PatternSet {
     }
 
     @Override
+    public String getWithVariables() {
+        StringBuilder sb = new StringBuilder();
+        IntStream.range(0, this.getPatterns().size())
+                .forEach(i -> sb.append(this.getPatterns().get(i).getWithVariables("body" + i)));
+        return sb.toString();
+    }
+
+    @Override
     public String getReturnVariables() {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, this.getPatterns().size())

@@ -23,7 +23,7 @@ public class Normal implements TailFragment {
         }
     }
 
-    public String getCypherReturnDefinition(String prefix, int iterationNumber) {
+    public String getCypherWithDefinition(String prefix, int iterationNumber) {
         if (iterationNumber == 0) {
             return nodeVariable + ".id as " + prefix + "_" + relationshipType + "_" + nodeLabel;
         }

@@ -117,4 +117,34 @@ class EcommerceInfluencerTest {
             assertThat(rules.size()).isGreaterThan(8);
         }
     }
+    @Test
+    void shouldMineAssociationRulesAnchorWhere() {
+        try (
+                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+                var session = driver.session()
+        ) {
+            /*
+            MINE GRAPH RULE SimpleAssociationRules
+            GROUPING ON person AS (:Person)
+            WHERE person.age > 20
+            DEFINING body AS 1...2 (person)-[:Buy]-(Item)
+                     head AS 1...1 (person)-[:Buy]-(Item)
+            WHERE person.age > 20
+            EXTRACTING RULES WITH SUPPORT: 0.3, CONFIDENCE: 0.1
+             */
+            // language=cypher
+            var rules = session.run("""
+
+                            //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
+                    CALL apoc.mgr.mineGraphRule('P', 'Person','P.age > 20', [{numMin:1, numMax:1, patternTail:[{type: 'normal', relationshipType: 'Buy', nodeLabel: 'Item', nodeVariable:'h'}]}], [{numMin:1, numMax:1, patternTail:[{type: 'normal', relationshipType: 'Buy', nodeLabel: 'Item', nodeVariable:'b'}]}], 0.2, 0.6)
+                    """)
+                    .stream().toList();
+
+            rules = rules.stream().filter(r -> !r.get("head").get("head0_Buy_Item").equals(r.get("body").get("Buy_Item"))).toList();
+            System.out.println(rules.size());
+            assertThat(rules).isNotEmpty();
+            assertThat(rules.size()).isEqualTo(7);
+        }
+    }
+
 }

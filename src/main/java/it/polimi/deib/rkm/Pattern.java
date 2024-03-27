@@ -35,16 +35,16 @@ public class Pattern {
         return new Pattern(this.numMin, this.numMax, this.num + 1, this.patternTail);
     }
 
-    public String getMatchClause(String anchor, String anchorType) {
+    public String getMatchClause(String anchor) {
         StringBuilder sb = new StringBuilder();
-        IntStream.range(0, this.num.intValue()).forEach(i -> sb.append(patternTail.getMatchClause(anchor, anchorType, i)));
+        IntStream.range(0, this.num.intValue()).forEach(i -> sb.append(patternTail.getMatchClause(anchor, i)));
         return sb.toString();
     }
 
-    public String getReturnVariables(String prefix){
+    public String getWithVariables(String prefix){
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, num.intValue())
-                .forEach(i -> sb.append(patternTail.getReturnVariables(prefix, i)));
+                .forEach(i -> sb.append(patternTail.getWithVariables(prefix, i)));
         return sb.toString();
     }
 
@@ -54,6 +54,13 @@ public class Pattern {
         IntStream.range(0, numMax.intValue())
                 .forEach(i -> columns.addAll(patternTail.getColumnNames(prefix, i)));
         return columns;
+    }
+
+    public String getReturnVariables(String prefix) {
+        StringBuilder sb = new StringBuilder();
+        IntStream.range(0, num.intValue())
+                .forEach(i -> sb.append(patternTail.getReturnVariables(prefix, i)));
+        return sb.toString();
     }
 }
 

@@ -47,7 +47,7 @@ public class RulesRegistry {
         try(Transaction tx = db.beginTx()){
 
             Result result = tx.execute("MATCH (" + query.getAnchor() + ":" + query.getAnchorLabel() + ") "
-                    + query.getAnchorWhereClause()
+                    + "WHERE " + query.getAnchorWhereClause()
                     + " RETURN count("+ query.getAnchor() +") AS count");
             if(result.hasNext()) {
                 transactionCount = (Long) result.next().get("count");
@@ -60,7 +60,7 @@ public class RulesRegistry {
         visitedQueries.forEach(queryNode -> {
             List<Map<String, Object>> bodies = new ArrayList<>();
             try(Transaction tx = db.beginTx()){
-                Result result = tx.execute(queryNode.getBodyInCypher());
+                Result result = tx.execute(queryNode.getBodyInCypher(transactionCount));
                 while(result.hasNext()){
                     Map<String, Object> row = result.next();
                     HashMap<String, Object> materializedRow = new HashMap<>();
@@ -92,7 +92,7 @@ public class RulesRegistry {
     private void retrieveRulesHelper(GraphDatabaseService db, QueryNode queryNode){
         List<Map<String, Object>> rules = new ArrayList<>();
         try(Transaction tx = db.beginTx()){
-            Result result = tx.execute(queryNode.getRuleInCypher());
+            Result result = tx.execute(queryNode.getRuleInCypher(transactionCount));
             while(result.hasNext()){
                 Map<String, Object> row = result.next();
                 HashMap<String, Object> materializedRow = new HashMap<>();

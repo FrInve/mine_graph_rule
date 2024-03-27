@@ -41,8 +41,8 @@ public class Query {
 
     public String getAnchorWhereClause(){
         StringBuilder sb = new StringBuilder();
-        sb.append("WHERE ")
-                .append(this.anchorWhereClause);
+//        sb.append("WHERE ")
+                sb.append(this.anchorWhereClause);
         return sb.toString();
     }
 
@@ -67,5 +67,16 @@ public class Query {
         columns.add("suppcount");
         return columns;
     }
+
+    public double getSupport() {
+        return support;
+    }
+
+    public double getConfidence() {
+        return confidence;
+    }
+
+
+
 
 }

@@ -2,7 +2,7 @@ package it.polimi.deib.rkm.fragments;
 
 public interface TailFragment {
     String toCypher(int iterationNumber);
-    String getCypherReturnDefinition(String prefix, int iterationNumber);
+    String getCypherWithDefinition(String prefix, int iterationNumber);
 
     String getReturnVariables(String prefix, int iterationNumber);
 

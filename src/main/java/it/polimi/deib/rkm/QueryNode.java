@@ -23,8 +23,8 @@ public class QueryNode {
         this.head = model.getHead();
         this.children = new ArrayList<>();
         this.halt = false;
-        this.support = 0L;
-        this.confidence = 0L;
+        this.support = model.getSupport();
+        this.confidence = model.getConfidence();
     }
 
     private QueryNode(QueryNode father, PatternSet body, PatternSet head){
@@ -35,8 +35,8 @@ public class QueryNode {
         this.head = head;
         this.children = new ArrayList<>();
         this.halt = false;
-        this.support = 0L;
-        this.confidence = 0L;
+        this.support = father.getSupport();
+        this.confidence = father.getConfidence();
     }
 
     public String getAnchor(){
@@ -51,7 +51,15 @@ public class QueryNode {
         return this.anchorWhereClause;
     }
 
-    public String getRuleInCypher(){
+    public double getSupport(){
+        return this.support;
+    }
+
+    public double getConfidence(){
+        return this.confidence;
+    }
+
+    public String getRuleInCypher(Long transactionsCount){
 //        StringBuilder sb = new StringBuilder();
 //        sb.append("HEAD: ");
 //        for(Pattern pattern : this.head.getPatterns()){
@@ -63,33 +71,56 @@ public class QueryNode {
 //        }
 //        return sb.toString();
         StringBuilder sb = new StringBuilder();
+        sb.append("MATCH (")
+                .append(anchor).append(":").append(anchorType).append(")\n");
+                    if(!anchorWhereClause.isEmpty()){
+                        sb.append("WHERE ");
+                        sb.append(anchorWhereClause)
+                                .append("\n");
+                    }
+                sb.append("WITH ").append(anchor).append(" AS anchor\n");
+
         sb.append("MATCH ")
-                .append(body.getMatchClause(anchor, anchorType))
-                .append(head.getMatchClause(anchor, anchorType))
+                .append(body.getMatchClause("anchor"))
+                .append(head.getMatchClause("anchor"))
                 .delete(sb.length() - 2, sb.length()).append("\n");
-        if(!anchorWhereClause.isEmpty()){
-            sb.append("WHERE ")
-                .append(anchorWhereClause)
-                .append("\n");
-        }
-        sb.append("RETURN count(DISTINCT ").append(anchor).append(") as suppcount, ")
+        sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
+                .append(body.getWithVariables())
+                .append(head.getWithVariables())//.append(", ")
+                .delete(sb.length() - 2, sb.length()).append("\n");
+
+        sb.append("WHERE suppcount > ").append(transactionsCount * support).append("\n");
+
+        sb.append("RETURN suppcount, ")
                 .append(body.getReturnVariables())
                 .append(head.getReturnVariables())//.append(", ")
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
     }
 
-    public String getBodyInCypher(){
+    public String getBodyInCypher(Long transactionsCount){
         StringBuilder sb = new StringBuilder();
-        sb.append("MATCH ")
-                .append(body.getMatchClause(anchor, anchorType))
-                .delete(sb.length() - 2, sb.length()).append("\n");
+
+        sb.append("MATCH (")
+                .append(anchor).append(":").append(anchorType).append(")\n");
         if(!anchorWhereClause.isEmpty()){
-            sb.append("WHERE ")
-                    .append(anchorWhereClause)
+            sb.append("WHERE ");
+            sb.append(anchorWhereClause)
                     .append("\n");
         }
-        sb.append("RETURN count(DISTINCT ").append(anchor).append(") as suppcount, ")
+        sb.append("WITH ").append(anchor).append(" AS anchor\n");
+
+        sb.append("MATCH ")
+                .append(body.getMatchClause("anchor"))
+                .delete(sb.length() - 2, sb.length()).append("\n");
+
+        sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
+                .append(body.getWithVariables())
+                .delete(sb.length() - 2, sb.length()).append("\n");
+
+        sb.append("WHERE suppcount > ").append((int) Math.floor(transactionsCount * support)).append("\n");
+
+        sb.append("RETURN suppcount, ")
                 .append(body.getReturnVariables())
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
@@ -126,7 +157,7 @@ public class QueryNode {
 
     @Override
     public int hashCode() {
-        return this.getRuleInCypher().hashCode();
+        return this.getRuleInCypher(0L).hashCode();
     }
 
     @Override
@@ -138,6 +169,6 @@ public class QueryNode {
             return false;
         }
         final QueryNode other = (QueryNode) obj;
-        return this.getRuleInCypher().hashCode() == other.getRuleInCypher().hashCode();
+        return this.getRuleInCypher(0L).hashCode() == other.getRuleInCypher(0L).hashCode();
     }
 }
