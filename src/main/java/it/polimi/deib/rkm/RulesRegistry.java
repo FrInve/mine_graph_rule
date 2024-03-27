@@ -66,6 +66,9 @@ public class RulesRegistry {
 
     public void retrieveBodies(GraphDatabaseService db){
         visitedQueries.forEach(queryNode -> {
+            if(queryNode.getHalt()){
+                return;
+            }
             List<Map<String, Object>> bodies = new ArrayList<>();
             try(Transaction tx = db.beginTx()){
                 Result result = tx.execute(queryNode.getBodyInCypher(transactionCount));
@@ -99,6 +102,11 @@ public class RulesRegistry {
 
     private void retrieveRulesHelper(GraphDatabaseService db, QueryNode queryNode){
         List<Map<String, Object>> rules = new ArrayList<>();
+
+        if(queryNode.getHalt()){
+            return;
+        }
+
         try(Transaction tx = db.beginTx()){
             Result result = tx.execute(queryNode.getRuleInCypher(transactionCount));
             while(result.hasNext()){
@@ -128,7 +136,11 @@ public class RulesRegistry {
             }
         }
 
-
+        // If the queryNode does not produce rules, halt
+        if (rules.isEmpty()) {
+            queryNode.setHalt(true);
+            return;
+        }
         // Generate children nodes
         queryNode.generateChildren();
 

@@ -13,7 +13,7 @@ public class QueryNode {
     private final double support;
     private final double confidence;
     private final List<QueryNode> children;
-    private final boolean halt;
+    private boolean halt;
 
     public QueryNode(Query model) {
         this.anchor = model.getAnchor();
@@ -59,6 +59,13 @@ public class QueryNode {
         return this.confidence;
     }
 
+    public boolean getHalt(){
+        return this.halt;
+    }
+
+    public void setHalt(boolean value){
+        this.halt = value;
+    }
     public String getRuleInCypher(Long transactionsCount){
 //        StringBuilder sb = new StringBuilder();
 //        sb.append("HEAD: ");
@@ -127,13 +134,14 @@ public class QueryNode {
     }
 
     public void generateChildren(){
-        if(this.halt){
-            return;
-        }
+//        if(this.halt){
+//            return;
+//        }
         for(int i=0; i<this.body.getPatterns().size(); i++){
             try{
                 PatternSet newBody = this.body.cloneAndReplacePattern(i, this.body.getPatterns().get(i).incrementAndCopy());
                 QueryNode child = new QueryNode(this, newBody, this.head);
+                child.setHalt(this.getHalt());
                 this.children.add(child);}
             catch(ExceedingPatternNumberException e){
                 continue;
@@ -143,6 +151,7 @@ public class QueryNode {
             try {
                 PatternSet newHead = this.head.cloneAndReplacePattern(i, this.head.getPatterns().get(i).incrementAndCopy());
                 QueryNode child = new QueryNode(this, this.body, newHead);
+                child.setHalt(this.getHalt());
                 this.children.add(child);
             }
             catch(ExceedingPatternNumberException e){
