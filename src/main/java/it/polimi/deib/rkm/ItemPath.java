@@ -27,6 +27,9 @@ public class ItemPath {
         for (Map<String, String> element : this.path) {
             switch (element.get("type")) {
                 case "normal" -> query.append(toCypherNormal(element));
+                case "reverse" -> query.append(toCypherReverse(element));
+                case "any" -> query.append(toCypherAny(element));
+                case "anyReverse" -> query.append(toCypherAnyReverse(element));
             }
         } // Add here rel_type count-any-shortest
         return query.toString();
@@ -37,6 +40,38 @@ public class ItemPath {
                 element.get("rel_alias") +
                 ":" +
                 element.get("rel_type") +
+                "]->(" +
+                element.get("end_node_alias") +
+                ":" +
+                element.get("end_node") +
+                ")";
+    }
+
+    public String toCypherReverse(Map<String, String> element) {
+        return "<-[" +
+                element.get("rel_alias") +
+                ":" +
+                element.get("rel_type") +
+                "]-(" +
+                element.get("end_node_alias") +
+                ":" +
+                element.get("end_node") +
+                ")";
+    }
+
+    public String toCypherAny(Map<String, String> element) {
+        return "-[*" +
+                element.get("rel_len") +
+                "]->(" +
+                element.get("end_node_alias") +
+                ":" +
+                element.get("end_node") +
+                ")";
+    }
+
+    public String toCypherAnyReverse(Map<String, String> element) {
+        return "<-[*" +
+                element.get("rel_len") +
                 "]-(" +
                 element.get("end_node_alias") +
                 ":" +
