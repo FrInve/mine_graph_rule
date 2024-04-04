@@ -1,6 +1,9 @@
 package it.polimi.deib.rkm;
 
 import it.polimi.deib.rkm.fragments.Normal;
+import it.polimi.deib.rkm.fragments.Reverse;
+import it.polimi.deib.rkm.fragments.Any;
+import it.polimi.deib.rkm.fragments.AnyReverse;
 import it.polimi.deib.rkm.fragments.TailFragment;
 
 import java.util.ArrayList;
@@ -15,6 +18,9 @@ public class PatternTail {
         for (Map<String, String> fragment : tail) {
             switch(fragment.get("type")) {
                 case "normal" -> this.tail.add(new Normal(fragment));
+                case "reverse" -> this.tail.add(new Reverse(fragment));
+                case "any" -> this.tail.add(new Any(fragment));
+                case "anyReverse" -> this.tail.add(new AnyReverse(fragment));
                 default -> throw new IllegalArgumentException("Unknown fragment type: " + fragment.get("type"));
             }
         }
