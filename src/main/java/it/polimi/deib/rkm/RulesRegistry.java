@@ -117,7 +117,7 @@ public class RulesRegistry {
                 }
                 rules.add(materializedRow);
             }
-//            tx.commit();  // This line was commented out in the original code
+            tx.commit();
         }
         // Print for debug
 //        System.out.println(queryNode.getRuleInCypher());
@@ -184,9 +184,10 @@ public class RulesRegistry {
         // Filter by support and confidence
         // Store the results in tableResults
         this.results = this.results.where(
-                this.results.doubleColumn("support").isGreaterThanOrEqualTo(minSupport)
-                        .and(this.results.doubleColumn("confidence")
-                                .isGreaterThanOrEqualTo(minConfidence)));
+//                this.results.doubleColumn("support").isGreaterThanOrEqualTo(minSupport)
+//                        .and(this.results.doubleColumn("confidence")
+//                                .isGreaterThanOrEqualTo(minConfidence)));
+                this.results.doubleColumn("confidence").isGreaterThanOrEqualTo(minConfidence));
     }
     public Stream<AssociationRule.Record> getResults() {
         List<String> headColumns = this.results.columnNames().stream()
