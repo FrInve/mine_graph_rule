@@ -3,6 +3,7 @@ package it.polimi.deib.rkm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class PatternSet {
     private List<Pattern> patterns;
@@ -34,10 +35,10 @@ public abstract class PatternSet {
         return sb.toString();
     }
 
-    public abstract String getWithVariables();
-    public abstract String getReturnVariables();
+    public abstract String getWithVariables(Set<String> ignore);
+    public abstract String getReturnVariables(Set<String> ignore);
 
-    public abstract List<String> getColumnNames(String prefix);
+    public abstract List<String> getColumnNames(String prefix, Set<String> ignore);
 
 }
 

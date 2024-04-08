@@ -21,10 +21,19 @@ public class MineGraphRule {
             @Name("anchorWhereClause") String anchorWhereClause,
             @Name("serializedHead") List<Map<String, Object>> serializedHead,
             @Name("serializedBody") List<Map<String, Object>> serializedBody,
+            @Name("ignore")      List<String> ignore,
             @Name("support")    Number support,
             @Name("confidence") Number confidence
             ) {
-        Query query = new Query(anchor, anchorLabel, anchorWhereClause, serializedHead, serializedBody, support.doubleValue(), confidence.doubleValue());
+        Query query = new Query(
+                anchor,
+                anchorLabel,
+                anchorWhereClause,
+                serializedHead,
+                serializedBody,
+                ignore,
+                support.doubleValue(),
+                confidence.doubleValue());
         // Create queries and retrieve data from Neo4j
         RulesRegistry rulesRegistry = new RulesRegistry();
 

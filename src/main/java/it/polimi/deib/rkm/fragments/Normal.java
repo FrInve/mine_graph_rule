@@ -3,10 +3,10 @@ package it.polimi.deib.rkm.fragments;
 import java.util.Map;
 
 public class Normal implements TailFragment {
-    private String type;
-    private String relationshipType;
-    private String nodeLabel;
-    private String nodeVariable;
+    private final String type;
+    private final String relationshipType;
+    private final String nodeLabel;
+    private final String nodeVariable;
 
     public Normal(Map<String, String> serializedFragment){
         this.type = serializedFragment.get("type");
@@ -14,6 +14,11 @@ public class Normal implements TailFragment {
         this.nodeLabel = serializedFragment.get("nodeLabel");
         this.nodeVariable = serializedFragment.get("nodeVariable");
     }
+
+    public String getNodeVariable(){
+        return nodeVariable;
+    }
+
     public String toCypher(int iterationNumber){
         if (iterationNumber == 0) {
             return "-[:" + relationshipType + "]->(" + nodeVariable + ":" + nodeLabel + ")";

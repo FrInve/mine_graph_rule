@@ -14,6 +14,11 @@ public class Reverse implements TailFragment {
         this.nodeLabel = serializedFragment.get("nodeLabel");
         this.nodeVariable = serializedFragment.get("nodeVariable");
     }
+
+    public String getNodeVariable(){
+        return nodeVariable;
+    }
+
     public String toCypher(int iterationNumber){
         if (iterationNumber == 0) {
             return "<-[:" + relationshipType + "]-(" + nodeVariable + ":" + nodeLabel + ")";

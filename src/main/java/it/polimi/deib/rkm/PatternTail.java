@@ -9,9 +9,10 @@ import it.polimi.deib.rkm.fragments.TailFragment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PatternTail {
-    private List<TailFragment> tail;
+    private final List<TailFragment> tail;
 
     public PatternTail(List<Map<String, String>> tail){
         this.tail = new ArrayList<>();
@@ -36,21 +37,24 @@ public class PatternTail {
         return sb.toString();
     }
 
-    public String getWithVariables(String prefix, int i){
+    public String getWithVariables(String prefix, int i, Set<String> ignore){
         StringBuilder sb = new StringBuilder();
-        tail.forEach(fragment -> sb.append(fragment.getCypherWithDefinition(prefix, i)).append(", "));
+        tail.stream().filter(fragment -> !ignore.contains(fragment.getNodeVariable()))
+                .forEach(fragment -> sb.append(fragment.getCypherWithDefinition(prefix, i)).append(", "));
         return sb.toString();
     }
 
-    public List<String> getColumnNames(String prefix, int i) {
+    public List<String> getColumnNames(String prefix, int i, Set<String> ignore) {
         List<String> columns = new ArrayList<>();
-        tail.forEach(fragment -> columns.add(fragment.getReturnVariable(prefix, i)));
+        tail.stream().filter(fragment -> !ignore.contains(fragment.getNodeVariable()))
+                .forEach(fragment -> columns.add(fragment.getReturnVariable(prefix, i)));
         return columns;
     }
 
-    public String getReturnVariables(String prefix, int i) {
+    public String getReturnVariables(String prefix, int i, Set<String> ignore) {
         StringBuilder sb = new StringBuilder();
-        tail.forEach(fragment -> sb.append(fragment.getReturnVariable(prefix, i)).append(", "));
+        tail.stream().filter(fragment -> !ignore.contains(fragment.getNodeVariable()))
+                .forEach(fragment -> sb.append(fragment.getReturnVariable(prefix, i)).append(", "));
         return sb.toString();
     }
 }

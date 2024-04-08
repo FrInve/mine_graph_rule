@@ -1,8 +1,6 @@
 package it.polimi.deib.rkm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Query {
     private final String anchor;
@@ -10,6 +8,7 @@ public class Query {
     private final String anchorWhereClause;
     private final PatternSet body;
     private final PatternSet head;
+    private final Set<String> ignore;
     private final double support;
     private final double confidence;
 
@@ -19,6 +18,7 @@ public class Query {
             String anchorWhereClause,
             List<Map<String, Object>> serializedHead,
             List<Map<String, Object>> serializedBody,
+            List<String> ignore,
             double support,
             double confidence
     ) {
@@ -27,6 +27,8 @@ public class Query {
         this.anchorWhereClause = anchorWhereClause;
         this.head = new Head(serializedHead);
         this.body = new Body(serializedBody);
+        this.ignore = new HashSet<>();
+        this.ignore.addAll(ignore);
         this.support = support;
         this.confidence = confidence;
     }
@@ -54,16 +56,20 @@ public class Query {
         return this.head;
     }
 
+    public Set<String> getIgnore(){
+        return this.ignore;
+    }
+
     public List<String> getRuleColumnNames(){
         List<String> columns = new ArrayList<>();
-        columns.addAll(head.getColumnNames("head"));
-        columns.addAll(body.getColumnNames("body"));
+        columns.addAll(head.getColumnNames("head", ignore));
+        columns.addAll(body.getColumnNames("body", ignore));
         columns.add("suppcount");
         return columns;
     }
 
     public List<String> getBodyColumnNames(){
-        List<String> columns = new ArrayList<>(body.getColumnNames("body"));
+        List<String> columns = new ArrayList<>(body.getColumnNames("body", ignore));
         columns.add("suppcount");
         return columns;
     }

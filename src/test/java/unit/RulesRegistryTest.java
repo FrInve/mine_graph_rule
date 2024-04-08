@@ -30,6 +30,7 @@ public class RulesRegistryTest {
                                 "relationshipType", "BUY",
                                 "nodeLabel", "Product",
                                 "nodeVariable", "bodyProduct")))),
+                List.of(),
                 0.1,
                 0.1
         );
@@ -72,6 +73,7 @@ public class RulesRegistryTest {
                                         "relationshipType", "OF",
                                         "nodeLabel", "Category",
                                         "nodeVariable", "bodyCategory")))),
+                List.of(),
                 0.1,
                 0.1
         );

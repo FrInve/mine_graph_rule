@@ -2,6 +2,7 @@ package it.polimi.deib.rkm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class QueryNode {
 
@@ -11,6 +12,7 @@ public class QueryNode {
     private final PatternSet body;
     private final PatternSet head;
     private final double support;
+    private final Set<String> ignore;
     private final double confidence;
     private final List<QueryNode> children;
     private boolean halt;
@@ -21,6 +23,7 @@ public class QueryNode {
         this.anchorWhereClause = model.getAnchorWhereClause();
         this.body = model.getBody();
         this.head = model.getHead();
+        this.ignore = model.getIgnore();
         this.children = new ArrayList<>();
         this.halt = false;
         this.support = model.getSupport();
@@ -33,6 +36,7 @@ public class QueryNode {
         this.anchorWhereClause = father.getAnchorWhereClause();
         this.body = body;
         this.head = head;
+        this.ignore = father.getIgnore();
         this.children = new ArrayList<>();
         this.halt = false;
         this.support = father.getSupport();
@@ -59,6 +63,9 @@ public class QueryNode {
         return this.confidence;
     }
 
+    public Set<String> getIgnore(){
+        return this.ignore;
+    }
     public boolean getHalt(){
         return this.halt;
     }
@@ -92,15 +99,15 @@ public class QueryNode {
                 .append(head.getMatchClause("anchor"))
                 .delete(sb.length() - 2, sb.length()).append("\n");
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
-                .append(body.getWithVariables())
-                .append(head.getWithVariables())//.append(", ")
+                .append(body.getWithVariables(ignore))
+                .append(head.getWithVariables(ignore))//.append(", ")
                 .delete(sb.length() - 2, sb.length()).append("\n");
 
         sb.append("WHERE suppcount > ").append(transactionsCount * support).append("\n");
 
         sb.append("RETURN suppcount, ")
-                .append(body.getReturnVariables())
-                .append(head.getReturnVariables())//.append(", ")
+                .append(body.getReturnVariables(ignore))
+                .append(head.getReturnVariables(ignore))//.append(", ")
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
     }
@@ -122,13 +129,13 @@ public class QueryNode {
                 .delete(sb.length() - 2, sb.length()).append("\n");
 
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
-                .append(body.getWithVariables())
+                .append(body.getWithVariables(ignore))
                 .delete(sb.length() - 2, sb.length()).append("\n");
 
         sb.append("WHERE suppcount > ").append((int) Math.floor(transactionsCount * support)).append("\n");
 
         sb.append("RETURN suppcount, ")
-                .append(body.getReturnVariables())
+                .append(body.getReturnVariables(ignore))
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
     }
@@ -144,7 +151,6 @@ public class QueryNode {
                 child.setHalt(this.getHalt());
                 this.children.add(child);}
             catch(ExceedingPatternNumberException e){
-                continue;
             }
         }
         for(int i=0; i<this.head.getPatterns().size(); i++){
@@ -155,7 +161,6 @@ public class QueryNode {
                 this.children.add(child);
             }
             catch(ExceedingPatternNumberException e){
-                continue;
             }
         }
     }
