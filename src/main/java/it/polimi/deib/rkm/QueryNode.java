@@ -76,16 +76,6 @@ public class QueryNode {
         this.halt = value;
     }
     public String getRuleInCypher(Long transactionsCount){
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("HEAD: ");
-//        for(Pattern pattern : this.head.getPatterns()){
-//            sb.append(pattern.getNum()).append(" ");
-//        }
-//        sb.append("\tBODY: ");
-//        for(Pattern pattern : this.body.getPatterns()){
-//            sb.append(pattern.getNum()).append(" ");
-//        }
-//        return sb.toString();
         StringBuilder sb = new StringBuilder();
         sb.append("MATCH (")
                 .append(anchor).append(":").append(anchorType).append(")\n");

@@ -21,6 +21,7 @@ public class MineGraphRule {
             @Name("anchorWhereClause") String anchorWhereClause,
             @Name("serializedHead") List<Map<String, Object>> serializedHead,
             @Name("serializedBody") List<Map<String, Object>> serializedBody,
+            @Name("where")       List<Map<String, String>> where,
             @Name("ignore")      List<String> ignore,
             @Name("support")    Number support,
             @Name("confidence") Number confidence
@@ -31,6 +32,7 @@ public class MineGraphRule {
                 anchorWhereClause,
                 serializedHead,
                 serializedBody,
+                where,
                 ignore,
                 support.doubleValue(),
                 confidence.doubleValue());
