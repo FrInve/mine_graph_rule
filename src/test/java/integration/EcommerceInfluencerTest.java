@@ -57,7 +57,7 @@ class EcommerceInfluencerTest {
             // language=cypher
             var rules = session.run("""
 //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[], 0.1, 0.1)
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[],[], 0.1, 0.1)
                     """)
                     .stream().toList();
 
@@ -82,7 +82,7 @@ class EcommerceInfluencerTest {
             // language=cypher
             var rules = session.run("""
 //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:4, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[], 0.2, 0.1)
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:4, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[],[], 0.2, 0.1)
                     """)
                     .stream().toList();
 
@@ -107,7 +107,7 @@ class EcommerceInfluencerTest {
             // language=cypher
             var rules = session.run("""
 //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]},{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Follow", nodeLabel: "Person", nodeVariable:"f"}]}],[], 0.2, 0.6)
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]},{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Follow", nodeLabel: "Person", nodeVariable:"f"}]}],[],[], 0.2, 0.6)
                     """)
                     .stream().toList();
 
@@ -136,7 +136,7 @@ class EcommerceInfluencerTest {
             var rules = session.run("""
 
                             //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule('P', 'Person','P.age > 20', [{numMin:1, numMax:1, patternTail:[{type: 'normal', relationshipType: 'Buy', nodeLabel: 'Item', nodeVariable:'h'}]}], [{numMin:1, numMax:1, patternTail:[{type: 'normal', relationshipType: 'Buy', nodeLabel: 'Item', nodeVariable:'b'}]}],[],0.2, 0.6)
+                    CALL apoc.mgr.mineGraphRule('P', 'Person','P.age > 20', [{numMin:1, numMax:1, patternTail:[{type: 'normal', relationshipType: 'Buy', nodeLabel: 'Item', nodeVariable:'h'}]}], [{numMin:1, numMax:1, patternTail:[{type: 'normal', relationshipType: 'Buy', nodeLabel: 'Item', nodeVariable:'b'}]}],[],[],0.2, 0.6)
                     """)
                     .stream().toList();
 
@@ -168,7 +168,7 @@ class EcommerceInfluencerTest {
                             CALL apoc.mgr.mineGraphRule("p", "Person","p.age>20",\s
 [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}],
 [{numMin:1, numMax:1, patternTail:[{type: "any",  relationshipLength: "1", relationshipType: "ANY", nodeLabel: "Item", nodeVariable:"b"}]}],
-[],0, 0)
+[],[],0, 0)
                     """)
                     .stream().toList();
 
@@ -195,7 +195,7 @@ class EcommerceInfluencerTest {
             // language=cypher
             var rules = session.run("""
 //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"ch"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"cb"}]}], ["h","b"],0.1, 0.1)
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"ch"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"cb"}]}], [],["h","b"],0.1, 0.1)
                     """)
                     .stream().toList();
 
@@ -205,5 +205,81 @@ class EcommerceInfluencerTest {
             assertThat(rules.size()).isEqualTo(4);
         }
     }
+    @Test
+    void shouldMineSimpleAssociationRulesImmediateWhere(){
+        try(
+                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+                var session = driver.session()
+        ) {
+            /*
+            MINE GRAPH RULE SimpleAssociationRules
+            GROUPING ON person AS (:Person)
+            DEFINING body AS 1...1 (person)-[:Buy]-(b:Item)
+                     head AS 1...1 (person)-[:Buy]-(h:Item)
+            WHERE b.price < 100
+            EXTRACTING RULES WITH SUPPORT: 0.1, CONFIDENCE: 0.1
+             */
+            // language=cypher
+            var rules = session.run("""
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", constantValue: "100"}],[], 0.1, 0.1)
+                    """)
+                    .stream().toList();
 
+            rules = rules.stream().toList();
+            rules.forEach(System.out::println);
+            assertThat(rules).isNotEmpty();
+        }
+    }
+
+    @Test
+    void shouldMineSimpleAssociationRulesNonImmediateWhere(){
+        try(
+                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+                var session = driver.session()
+        ) {
+            /*
+            MINE GRAPH RULE SimpleAssociationRules
+            GROUPING ON person AS (:Person)
+            DEFINING body AS 1...1 (person)-[:Buy]-(b:Item)
+                     head AS 1...1 (person)-[:Buy]-(h:Item)
+            WHERE b.price < h.price
+            EXTRACTING RULES WITH SUPPORT: 0.1, CONFIDENCE: 0.1
+             */
+            // language=cypher
+            var rules = session.run("""
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", otherVariable: "h", otherVariableProperty: "price"}],[], 0.1, 0.1)
+                    """)
+                    .stream().toList();
+
+            rules = rules.stream().toList();
+            rules.forEach(System.out::println);
+            assertThat(rules).isNotEmpty();
+        }
+    }
+
+    @Test
+    void shouldMineSimpleAssociationRulesNonImmediateWhereHigherCardinality(){
+        try(
+                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+                var session = driver.session()
+        ) {
+            /*
+            MINE GRAPH RULE SimpleAssociationRules
+            GROUPING ON person AS (:Person)
+            DEFINING body AS 1...1 (person)-[:Buy]-(b:Item)
+                     head AS 1...1 (person)-[:Buy]-(h:Item)
+            WHERE b.price < h.price
+            EXTRACTING RULES WITH SUPPORT: 0.1, CONFIDENCE: 0.1
+             */
+            // language=cypher
+            var rules = session.run("""
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", otherVariable: "h", otherVariableProperty: "price"}],[], 0.1, 0.1)
+                    """)
+                    .stream().toList();
+
+            rules = rules.stream().toList();
+            rules.forEach(System.out::println);
+            assertThat(rules).isNotEmpty();
+        }
+    }
 }
