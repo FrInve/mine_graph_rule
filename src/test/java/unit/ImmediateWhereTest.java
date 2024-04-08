@@ -44,4 +44,11 @@ public class ImmediateWhereTest {
                 .getWhereClause())
                 .isEqualTo("person.age > 18 AND person1.age > 18 AND person2.age > 18 AND person3.age > 18");
     }
+
+    @Test
+    void testGetWhereClauseZeroOccurrences(){
+        ImmediateWhere immediateWhere = generateImmediateWhere();
+        immediateWhere.setVariableCardinality(0);
+        assertThat(immediateWhere.getWhereClause()).isEqualTo("");
+    }
 }

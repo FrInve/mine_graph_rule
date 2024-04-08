@@ -62,4 +62,26 @@ public class NonImmediateWhereTest {
         nonImmediateWhere.setOtherVariableCardinality(2);
         assertThat(nonImmediateWhere.getWhereClause()).isEqualTo("firstPerson.age > secondPerson.age AND firstPerson.age > secondPerson1.age AND firstPerson1.age > secondPerson.age AND firstPerson1.age > secondPerson1.age");
     }
+
+    @Test
+    void testGetWhereClauseZeroOccurrences(){
+        NonImmediateWhere nonImmediateWhere = generateImmediateWhere();
+        nonImmediateWhere.setVariableCardinality(0);
+        nonImmediateWhere.setOtherVariableCardinality(0);
+        assertThat(nonImmediateWhere.getWhereClause()).isEqualTo("");
+    }
+    @Test
+    void testGetWhereClauseZeroOccurrences1(){
+        NonImmediateWhere nonImmediateWhere = generateImmediateWhere();
+        nonImmediateWhere.setVariableCardinality(2);
+        nonImmediateWhere.setOtherVariableCardinality(0);
+        assertThat(nonImmediateWhere.getWhereClause()).isEqualTo("");
+    }
+    @Test
+    void testGetWhereClauseZeroOccurrences2(){
+        NonImmediateWhere nonImmediateWhere = generateImmediateWhere();
+        nonImmediateWhere.setVariableCardinality(0);
+        nonImmediateWhere.setOtherVariableCardinality(2);
+        assertThat(nonImmediateWhere.getWhereClause()).isEqualTo("");
+    }
 }
