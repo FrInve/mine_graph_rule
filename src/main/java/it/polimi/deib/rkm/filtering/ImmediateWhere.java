@@ -16,6 +16,17 @@ public class ImmediateWhere implements Where {
        operand = serializedWhere.get("operand");
        constantValue = serializedWhere.get("constantValue");
     }
+
+    @Override
+    public String getVariable(){
+        return variable;
+    }
+
+    @Override
+    public String getOtherVariable(){
+        return "";
+    }
+
     @Override
     public void setVariableCardinality(int cardinality) {
         variableCardinality = cardinality;

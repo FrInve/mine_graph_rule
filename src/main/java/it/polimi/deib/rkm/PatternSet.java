@@ -40,6 +40,10 @@ public abstract class PatternSet {
 
     public abstract List<String> getColumnNames(String prefix, Set<String> ignore);
 
+    public int getVariableCardinality(String variable){
+        return patterns.stream().map(p -> p.getVariableCardinality(variable)).max(Integer::compare).orElse(0);
+    }
+
 }
 
 

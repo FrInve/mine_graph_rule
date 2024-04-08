@@ -1,10 +1,12 @@
 package it.polimi.deib.rkm;
 
 import it.polimi.deib.rkm.exceptions.ExceedingPatternNumberException;
+import it.polimi.deib.rkm.filtering.Where;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class QueryNode {
 
@@ -14,6 +16,7 @@ public class QueryNode {
     private final PatternSet body;
     private final PatternSet head;
     private final double support;
+    private final List<Where> where;
     private final Set<String> ignore;
     private final double confidence;
     private final List<QueryNode> children;
@@ -25,6 +28,7 @@ public class QueryNode {
         this.anchorWhereClause = model.getAnchorWhereClause();
         this.body = model.getBody();
         this.head = model.getHead();
+        this.where = model.getWhere();
         this.ignore = model.getIgnore();
         this.children = new ArrayList<>();
         this.halt = false;
@@ -38,6 +42,7 @@ public class QueryNode {
         this.anchorWhereClause = father.getAnchorWhereClause();
         this.body = body;
         this.head = head;
+        this.where = father.getWhere();
         this.ignore = father.getIgnore();
         this.children = new ArrayList<>();
         this.halt = false;
@@ -68,6 +73,8 @@ public class QueryNode {
     public Set<String> getIgnore(){
         return this.ignore;
     }
+
+    public List<Where> getWhere() { return this.where; }
     public boolean getHalt(){
         return this.halt;
     }
@@ -75,6 +82,33 @@ public class QueryNode {
     public void setHalt(boolean value){
         this.halt = value;
     }
+
+    private int getVariableCardinalityInRule(String variable){
+        return Math.max(body.getVariableCardinality(variable), head.getVariableCardinality(variable));
+    }
+
+    private int getVariableCardinalityInBody(String variable){
+        return body.getVariableCardinality(variable);
+    }
+    private String generateWhereClauseForRule() {
+        where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInRule(w.getVariable())));
+        where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInRule(w.getOtherVariable())));
+        String whereContent = where.stream().map(Where::getWhereClause).collect(Collectors.joining(" AND "));
+        if(whereContent.isEmpty()){
+            return "";
+        }
+        return "WHERE " + whereContent;
+    }
+    private String generateWhereClauseForBody() {
+        where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInBody(w.getVariable())));
+        where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInBody(w.getOtherVariable())));
+        String whereContent = where.stream().map(Where::getWhereClause).collect(Collectors.joining(" AND "));
+        if(whereContent.isEmpty()){
+            return "";
+        }
+        return "WHERE " + whereContent;
+    }
+
     public String getRuleInCypher(Long transactionsCount){
         StringBuilder sb = new StringBuilder();
         sb.append("MATCH (")
@@ -90,6 +124,8 @@ public class QueryNode {
                 .append(body.getMatchClause("anchor"))
                 .append(head.getMatchClause("anchor"))
                 .delete(sb.length() - 2, sb.length()).append("\n");
+        sb.append(generateWhereClauseForRule()) // WHERE CLAUSE FOR RULE
+                .append("\n");
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
                 .append(body.getWithVariables(ignore))
                 .append(head.getWithVariables(ignore))//.append(", ")
@@ -119,7 +155,8 @@ public class QueryNode {
         sb.append("MATCH ")
                 .append(body.getMatchClause("anchor"))
                 .delete(sb.length() - 2, sb.length()).append("\n");
-
+        sb.append(generateWhereClauseForBody())     // WHERE CLAUSE FOR BODY
+                .append("\n");
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
                 .append(body.getWithVariables(ignore))
                 .delete(sb.length() - 2, sb.length()).append("\n");

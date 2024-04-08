@@ -65,5 +65,13 @@ public class Pattern {
                 .forEach(i -> sb.append(patternTail.getReturnVariables(prefix, i, ignore)));
         return sb.toString();
     }
+
+    public int getVariableCardinality(String variable){
+        if(this.patternTail.containsVariable(variable)){
+            return this.num.intValue();
+        }
+        return 0;
+    }
+
 }
 

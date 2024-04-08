@@ -67,6 +67,9 @@ public class Query {
         return this.ignore;
     }
 
+    public List<Where> getWhere(){
+        return this.where;
+    }
     public List<String> getRuleColumnNames(){
         List<String> columns = new ArrayList<>();
         columns.addAll(head.getColumnNames("head", ignore));

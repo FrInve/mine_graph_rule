@@ -22,6 +22,15 @@ public class NonImmediateWhere implements Where{
     }
 
     @Override
+    public String getVariable(){
+        return variable;
+    }
+    @Override
+    public String getOtherVariable(){
+        return otherVariable;
+    }
+
+    @Override
     public void setVariableCardinality(int variableCardinality) {
         this.variableCardinality = variableCardinality;
     }

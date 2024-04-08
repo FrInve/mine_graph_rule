@@ -57,4 +57,8 @@ public class PatternTail {
                 .forEach(fragment -> sb.append(fragment.getReturnVariable(prefix, i)).append(", "));
         return sb.toString();
     }
+
+    public boolean containsVariable(String variable){
+        return tail.stream().anyMatch(fragment -> fragment.getNodeVariable().equals(variable));
+    }
 }
