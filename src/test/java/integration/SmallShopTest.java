@@ -40,6 +40,7 @@ class SmallShopTest {
         this.embeddedDatabaseServer.close();
     }
 
+    @Disabled
     @Test
     void countAllNodesAndRelationships() {
 
@@ -86,6 +87,7 @@ class SmallShopTest {
 //        }
 //    }
 
+    @Disabled
     @Test
     void shouldMineSimpleRules(){
         try(

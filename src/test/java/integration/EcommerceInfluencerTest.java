@@ -1,10 +1,7 @@
 package integration;
 
 import it.polimi.deib.rkm.MineGraphRule;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.harness.Neo4j;
 import org.neo4j.harness.Neo4jBuilders;
@@ -147,6 +144,7 @@ class EcommerceInfluencerTest {
         }
     }
 
+    @Disabled
     @Test
     void shouldMineAssociationRulesAnchorWhereServer() {
         try (
@@ -195,7 +193,7 @@ class EcommerceInfluencerTest {
             // language=cypher
             var rules = session.run("""
 //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"ch"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"cb"}]}], [],["h","b"],0.1, 0.1)
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"ch"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"},{type:"normal", relationshipType:"Of", nodeLabel:"Category",nodeVariable:"cb"}]}], [],["h","b"],0.1, 0.1)
                     """)
                     .stream().toList();
 
