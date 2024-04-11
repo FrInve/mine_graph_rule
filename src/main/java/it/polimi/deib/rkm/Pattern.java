@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Pattern {
     private final Long numMin;
@@ -20,6 +22,7 @@ public class Pattern {
         this.num = num;
         this.patternTail = patternTail;
     }
+    @SuppressWarnings("unchecked")
     public Pattern(Map<String, Object> serializedPattern){
         this.numMin = (Long) serializedPattern.get("numMin");
         this.numMax = (Long) serializedPattern.get("numMax");
@@ -27,6 +30,7 @@ public class Pattern {
         this.patternTail = new PatternTail((List<Map<String,String>>) serializedPattern.get("patternTail"));
     }
 
+    @Deprecated(forRemoval = true)
     public String getNum() {
         return num.toString();
     }
@@ -59,6 +63,12 @@ public class Pattern {
         return columns;
     }
 
+    public Stream<String> getFragmentsWhereClauses(String prefix){
+        return IntStream.range(0, num.intValue())
+                .mapToObj(i -> patternTail.getFragmentsWhereClauses(prefix, i))
+                .flatMap(Function.identity());
+    }
+
     public String getReturnVariables(String prefix, Set<String> ignore) {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, num.intValue())
@@ -73,5 +83,8 @@ public class Pattern {
         return 0;
     }
 
+    public void setPreviousFragments() {
+        patternTail.setPreviousFragments();
+    }
 }
 

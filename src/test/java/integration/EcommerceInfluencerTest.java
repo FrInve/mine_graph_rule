@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +23,7 @@ class EcommerceInfluencerTest {
     void initializeNeo4j() throws IOException {
 
         var sw = new StringWriter();
-        try (var in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/ecommerce_influencer.cypher")))) {
+        try (var in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/ecommerce_influencer.cypher"))))) {
             in.transferTo(sw);
             sw.flush();
         }
@@ -278,6 +279,31 @@ class EcommerceInfluencerTest {
             rules = rules.stream().toList();
             rules.forEach(System.out::println);
             assertThat(rules).isNotEmpty();
+        }
+    }
+    @Test
+    void shouldMineSimpleAssociationRulesCount(){
+        try(
+                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+                var session = driver.session()
+        ) {
+            /*
+            MINE GRAPH RULE SimpleAssociationRules
+            GROUPING ON person AS (:Person)
+            DEFINING body AS 1...1 (person)-[:Buy]-(Item)
+                     head AS 1...1 (person)-[:Buy]-(Item)
+            EXTRACTING RULES WITH SUPPORT: 0.1, CONFIDENCE: 0.1
+             */
+            // language=cypher
+            var rules = session.run("""
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "count", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b", minValue:"2"}]}],[],[], 0.1, 0.1)
+                    """)
+                    .stream().toList();
+
+            rules = rules.stream().toList();
+            rules.forEach(System.out::println);
+            assertThat(rules).isNotEmpty();
+            assertThat(rules.size()).isEqualTo(5);
         }
     }
 }

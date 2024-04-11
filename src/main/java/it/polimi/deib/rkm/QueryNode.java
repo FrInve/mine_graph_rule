@@ -5,8 +5,10 @@ import it.polimi.deib.rkm.filtering.Where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class QueryNode {
 
@@ -34,6 +36,9 @@ public class QueryNode {
         this.halt = false;
         this.support = model.getSupport();
         this.confidence = model.getConfidence();
+        // Set previous fragments for each tail
+        body.setPreviousFragments();
+        head.setPreviousFragments();
     }
 
     private QueryNode(QueryNode father, PatternSet body, PatternSet head){
@@ -93,7 +98,18 @@ public class QueryNode {
     private String generateWhereClauseForRule() {
         where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInRule(w.getVariable())));
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInRule(w.getOtherVariable())));
-        String whereContent = where.stream().map(Where::getWhereClause).collect(Collectors.joining(" AND "));
+        Stream<String> whereStream = where.stream().map(Where::getWhereClause);
+        // Add count fragments WHERE clauses like: size([(a)-[countPath:Type]->(b) | countPath]) >= min
+        whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+        whereStream = Stream.concat(whereStream, head.getFragmentsWhereClauses()).filter(Objects::nonNull);
+
+        String whereContent;
+//        if(whereStream.count() > 1){
+            whereContent = whereStream.collect(Collectors.joining(" AND "));
+//        } else {
+//            whereContent = whereStream.findFirst().orElse("");
+//        }
+        // Decide if the WHERE clause should be added
         if(whereContent.isEmpty()){
             return "";
         }
@@ -102,7 +118,7 @@ public class QueryNode {
     private String generateWhereClauseForBody() {
         where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInBody(w.getVariable())));
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInBody(w.getOtherVariable())));
-        String whereContent = where.stream().map(Where::getWhereClause).collect(Collectors.joining(" AND "));
+        String whereContent = where.stream().map(Where::getWhereClause).filter(Objects::nonNull).collect(Collectors.joining(" AND "));
         if(whereContent.isEmpty()){
             return "";
         }
@@ -179,7 +195,7 @@ public class QueryNode {
                 QueryNode child = new QueryNode(this, newBody, this.head);
                 child.setHalt(this.getHalt());
                 this.children.add(child);}
-            catch(ExceedingPatternNumberException e){
+            catch(ExceedingPatternNumberException ignored){
             }
         }
         for(int i=0; i<this.head.getPatterns().size(); i++){
@@ -189,7 +205,7 @@ public class QueryNode {
                 child.setHalt(this.getHalt());
                 this.children.add(child);
             }
-            catch(ExceedingPatternNumberException e){
+            catch(ExceedingPatternNumberException ignored){
             }
         }
     }

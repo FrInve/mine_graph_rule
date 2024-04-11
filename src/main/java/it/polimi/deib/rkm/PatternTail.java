@@ -1,15 +1,12 @@
 package it.polimi.deib.rkm;
 
-import it.polimi.deib.rkm.fragments.Normal;
-import it.polimi.deib.rkm.fragments.Reverse;
-import it.polimi.deib.rkm.fragments.Any;
-import it.polimi.deib.rkm.fragments.AnyReverse;
-import it.polimi.deib.rkm.fragments.TailFragment;
+import it.polimi.deib.rkm.fragments.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class PatternTail {
     private final List<TailFragment> tail;
@@ -22,6 +19,7 @@ public class PatternTail {
                 case "reverse" -> this.tail.add(new Reverse(fragment));
                 case "any" -> this.tail.add(new Any(fragment));
                 case "anyReverse" -> this.tail.add(new AnyReverse(fragment));
+                case "count" -> this.tail.add(new Count(fragment));
                 default -> throw new IllegalArgumentException("Unknown fragment type: " + fragment.get("type"));
             }
         }
@@ -51,6 +49,10 @@ public class PatternTail {
         return columns;
     }
 
+    public Stream<String> getFragmentsWhereClauses(String prefix, int i){
+        return tail.stream().map(f -> f.getWhereClause(prefix, i));
+    }
+
     public String getReturnVariables(String prefix, int i, Set<String> ignore) {
         StringBuilder sb = new StringBuilder();
         tail.stream().filter(fragment -> !ignore.contains(fragment.getNodeVariable()))
@@ -60,5 +62,13 @@ public class PatternTail {
 
     public boolean containsVariable(String variable){
         return tail.stream().anyMatch(fragment -> fragment.getNodeVariable().equals(variable));
+    }
+
+    public void setPreviousFragments(){
+        for (int i = 0; i < tail.size(); i++) {
+            if (i > 0) {
+                tail.get(i).setPreviousFragment(tail.get(i - 1));
+            }
+        }
     }
 }

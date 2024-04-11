@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Head extends PatternSet {
 
@@ -39,6 +40,11 @@ public class Head extends PatternSet {
         IntStream.range(0, this.getPatterns().size())
                 .forEach(i -> sb.append(this.getPatterns().get(i).getReturnVariables("head" + i, ignore)));
         return sb.toString();
+    }
+
+    @Override
+    public Stream<String> getFragmentsWhereClauses(){
+        return this.patterns.stream().flatMap(p -> p.getFragmentsWhereClauses("head"));
     }
 
     @Override

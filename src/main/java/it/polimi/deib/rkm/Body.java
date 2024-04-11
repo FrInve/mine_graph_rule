@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Body extends PatternSet {
     public Body(List<Map<String, Object>> serializedBody) {
@@ -38,6 +39,11 @@ public class Body extends PatternSet {
         IntStream.range(0, this.getPatterns().size())
                 .forEach(i -> sb.append(this.getPatterns().get(i).getReturnVariables("body" + i, ignore)));
         return sb.toString();
+    }
+
+    @Override
+    public Stream<String> getFragmentsWhereClauses(){
+        return this.patterns.stream().flatMap(p -> p.getFragmentsWhereClauses("body"));
     }
 
 

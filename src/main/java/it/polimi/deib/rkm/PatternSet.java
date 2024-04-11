@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public abstract class PatternSet {
-    private List<Pattern> patterns;
+    protected List<Pattern> patterns;
 
     public PatternSet(List<Map<String, Object>> serializedPatterns){
         this.patterns = new ArrayList<>();
@@ -35,6 +36,8 @@ public abstract class PatternSet {
         return sb.toString();
     }
 
+    public abstract Stream<String> getFragmentsWhereClauses();
+
     public abstract String getWithVariables(Set<String> ignore);
     public abstract String getReturnVariables(Set<String> ignore);
 
@@ -42,6 +45,10 @@ public abstract class PatternSet {
 
     public int getVariableCardinality(String variable){
         return patterns.stream().map(p -> p.getVariableCardinality(variable)).max(Integer::compare).orElse(0);
+    }
+
+    public void setPreviousFragments(){
+        patterns.forEach(Pattern::setPreviousFragments);
     }
 
 }
