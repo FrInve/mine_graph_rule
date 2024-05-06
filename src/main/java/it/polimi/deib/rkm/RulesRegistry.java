@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class RulesRegistry {
-    private final Table rules;
+    private Table rules;
     private final Table bodies;
     private Table results;
     private Long transactionCount;
@@ -162,6 +162,23 @@ public class RulesRegistry {
                 .toArray(String[]::new);
         this.results = this.rules.joinOn(bodyColumns).inner(true, this.bodies);
 
+    }
+
+    public void removeTautologies(){
+        // Remove tautologies from table Results
+        // A tautology is a rule where the head and body are the same
+        // Check if tautologies are possible at schema level
+        List<String> headColumns = this.rules.columnNames().stream()
+                .filter(column -> column.contains("head"))
+                .toList();
+        List<String> bodyColumns = this.rules.columnNames().stream()
+                .filter(column -> column.contains("body"))
+                .toList();
+        if(headColumns.get(0).replace("head", "body").equals(bodyColumns.get(0))) {
+            this.rules = this.rules.where(
+                    this.rules.stringColumn(headColumns.get(0))
+                            .isNotEqualTo(this.rules.stringColumn(bodyColumns.get(0))));
+        }
     }
 
     public void computeMetrics(){

@@ -51,6 +51,8 @@ public class MineGraphRule {
         // 2. Retrieve and count bodies
         rulesRegistry.retrieveBodies(db);
 
+        rulesRegistry.removeTautologies();
+
         // 4. Join rules with bodies
         rulesRegistry.combineRules();
 

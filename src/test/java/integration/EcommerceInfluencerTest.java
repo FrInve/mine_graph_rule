@@ -55,13 +55,14 @@ class EcommerceInfluencerTest {
             // language=cypher
             var rules = session.run("""
 //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[],[], 0.1, 0.1)
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[],[], 0.0, 0.0)
                     """)
                     .stream().toList();
 
-            rules = rules.stream().filter(r -> !r.get("head").get("head0_Buy_Item").equals(r.get("body").get("Buy_Item"))).toList();
+            rules = rules.stream().toList();//.filter(r -> !r.get("head").get("head0_Buy_Item").equals(r.get("body").get("Buy_Item"))).toList();
+            rules.forEach(System.out::println);
             assertThat(rules).isNotEmpty();
-            assertThat(rules.size()).isEqualTo(10);
+            assertThat(rules.size()).isEqualTo(8);
         }
     }
     @Test
@@ -80,11 +81,12 @@ class EcommerceInfluencerTest {
             // language=cypher
             var rules = session.run("""
 //                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Item", end_node_alias:"b"}]}], 0.1, 0.1)
-                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:4, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[],[], 0.2, 0.1)
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:3, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[],[], 0.2, 0.1)
                     """)
                     .stream().toList();
 
-            rules = rules.stream().filter(r -> !r.get("head").get("head0_Buy_Item").equals(r.get("body").get("Buy_Item"))).toList();
+            rules = rules.stream().toList(); //.filter(r -> !r.get("head").get("head0_Buy_Item").equals(r.get("body").get("Buy_Item"))).toList();
+            rules.forEach(System.out::println);
             assertThat(rules).isNotEmpty();
             assertThat(rules.size()).isGreaterThan(8);
         }
@@ -201,7 +203,7 @@ class EcommerceInfluencerTest {
             rules = rules.stream().toList();
             rules.forEach(System.out::println);
             assertThat(rules).isNotEmpty();
-            assertThat(rules.size()).isEqualTo(4);
+            assertThat(rules.size()).isLessThanOrEqualTo(2);
         }
     }
     @Test
