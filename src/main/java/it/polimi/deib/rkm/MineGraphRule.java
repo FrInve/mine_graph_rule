@@ -12,7 +12,7 @@ public class MineGraphRule {
     @Context
     public GraphDatabaseService db;
 
-    @Procedure(name = "apoc.mgr.mineGraphRule", mode=Mode.READ)
+    @Procedure(name = "apoc.mineGraphRule", mode=Mode.READ)
     @Description("Graph Association Rule Mining for Neo4j")
     public Stream<AssociationRule.Record> mineGraphRule(
             // Input parameters here
