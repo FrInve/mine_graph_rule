@@ -284,6 +284,31 @@ class EcommerceInfluencerTest {
         }
     }
     @Test
+    void shouldMineSimpleAssociationRulesMultipleImmediateWhere(){
+        try(
+                var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
+                var session = driver.session()
+        ) {
+            /*
+            MINE GRAPH RULE SimpleAssociationRules
+            GROUPING ON person AS (:Person)
+            DEFINING body AS 1...1 (person)-[:Buy]-(b:Item)
+                     head AS 1...1 (person)-[:Buy]-(h:Item)
+            WHERE b.price < 100
+            EXTRACTING RULES WITH SUPPORT: 0.1, CONFIDENCE: 0.1
+             */
+            // language=cypher
+            var rules = session.run("""
+                    CALL apoc.mgr.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", constantValue: "100"},{variable:"h",variableProperty:"price",operand:"<",constantValue:"100"}],[], 0.1, 0.1)
+                    """)
+                    .stream().toList();
+
+            rules = rules.stream().toList();
+            rules.forEach(System.out::println);
+            assertThat(rules).isNotEmpty();
+        }
+    }
+    @Test
     void shouldMineSimpleAssociationRulesCount(){
         try(
                 var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());

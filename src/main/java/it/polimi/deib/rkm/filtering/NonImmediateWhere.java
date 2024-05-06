@@ -55,4 +55,14 @@ public class NonImmediateWhere implements Where{
                 .mapToObj(i -> i == 0 ? otherVariable : otherVariable + i)    // variable, variable1, variable2, ...
                 .map(v -> v + "." + otherVariableProperty);               // variable.variableProperty, ...
     }
+
+    @Override
+    public boolean existVariable(){
+        return variableCardinality > 0;
+    }
+
+    @Override
+    public boolean existOtherVariable(){
+        return otherVariableCardinality > 0;
+    }
 }

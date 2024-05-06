@@ -118,7 +118,7 @@ public class QueryNode {
     private String generateWhereClauseForBody() {
         where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInBody(w.getVariable())));
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInBody(w.getOtherVariable())));
-        String whereContent = where.stream().map(Where::getWhereClause).filter(Objects::nonNull).collect(Collectors.joining(" AND "));
+        String whereContent = where.stream().filter(w->w.existVariable() && w.existOtherVariable()).map(Where::getWhereClause).collect(Collectors.joining(" AND "));
         if(whereContent.isEmpty()){
             return "";
         }

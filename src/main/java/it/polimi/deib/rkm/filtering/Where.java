@@ -6,4 +6,6 @@ public interface Where {
     void setVariableCardinality(int cardinality);
     void setOtherVariableCardinality(int cardinality);
     String getWhereClause();
+    boolean existVariable();
+    boolean existOtherVariable();
 }

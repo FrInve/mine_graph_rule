@@ -45,4 +45,14 @@ public class ImmediateWhere implements Where {
                 .map(c -> c + " " + operand + " " + constantValue)  // variable.variableProperty operand constantValue, ...
                 .collect(Collectors.joining(" AND "));     // variable.variableProperty operand constantValue AND ...
     }
+
+    @Override
+    public boolean existVariable(){
+        return variableCardinality > 0;
+    }
+
+    @Override
+    public boolean existOtherVariable(){
+        return true;
+    }
 }
