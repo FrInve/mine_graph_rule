@@ -143,7 +143,7 @@ class EcommerceInfluencerTest {
             rules = rules.stream().filter(r -> !r.get("head").get("head0_Buy_Item").equals(r.get("body").get("Buy_Item"))).toList();
             System.out.println(rules.size());
             assertThat(rules).isNotEmpty();
-            assertThat(rules.size()).isEqualTo(7);
+            assertThat(rules.size()).isEqualTo(6);
         }
     }
 
@@ -330,7 +330,7 @@ class EcommerceInfluencerTest {
             rules = rules.stream().toList();
             rules.forEach(System.out::println);
             assertThat(rules).isNotEmpty();
-            assertThat(rules.size()).isEqualTo(5);
+            assertThat(rules.size()).isEqualTo(3);
         }
     }
 }

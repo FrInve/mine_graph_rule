@@ -87,8 +87,9 @@ class SmallShopTest {
 //        }
 //    }
 
-    @Disabled
+
     @Test
+    @Disabled
     void shouldMineSimpleRules(){
         try(
                 var driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI());
@@ -96,7 +97,7 @@ class SmallShopTest {
         ) {
             // language=cypher
             session.run("""
-                    CALL apoc.mineGraphRule("P", "Person", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], 0.1, 0.5)
+                    CALL apoc.mineGraphRule("P", "Person", "", [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], [{num_min:1, num_max:1, item_path:[{type: "normal", rel_type: "Buy", rel_alias:"buy", end_node: "Article", end_node_alias:"b"}]}], [], [], 0.1, 0.5)
                     """)
                     .stream();
         }
