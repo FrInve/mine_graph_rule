@@ -113,16 +113,21 @@ public class QueryNode {
         if(whereContent.isEmpty()){
             return "";
         }
-        return "WHERE " + whereContent;
+        return "WHERE " + whereContent + "\n";
     }
     private String generateWhereClauseForBody() {
         where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInBody(w.getVariable())));
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInBody(w.getOtherVariable())));
-        String whereContent = where.stream().filter(w->w.existVariable() && w.existOtherVariable()).map(Where::getWhereClause).collect(Collectors.joining(" AND "));
+        Stream<String> whereStream = where.stream().filter(w->w.existVariable() && w.existOtherVariable()).map(Where::getWhereClause);
+        whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+        String whereContent;
+        whereContent = whereStream.filter(Objects::nonNull).collect(Collectors.joining(" AND "));
+
+     //   String whereContent = where.stream().filter(w->w.existVariable() && w.existOtherVariable()).map(Where::getWhereClause).collect(Collectors.joining(" AND "));
         if(whereContent.isEmpty()){
             return "";
         }
-        return "WHERE " + whereContent;
+        return "WHERE " + whereContent + "\n";
     }
 
     public String getRuleInCypher(Long transactionsCount){
@@ -140,8 +145,7 @@ public class QueryNode {
                 .append(body.getMatchClause("anchor"))
                 .append(head.getMatchClause("anchor"))
                 .delete(sb.length() - 2, sb.length()).append("\n");
-        sb.append(generateWhereClauseForRule()) // WHERE CLAUSE FOR RULE
-                .append("\n");
+        sb.append(generateWhereClauseForRule()); // WHERE CLAUSE FOR RULE
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
                 .append(body.getWithVariables(ignore))
                 .append(head.getWithVariables(ignore))//.append(", ")
@@ -171,8 +175,7 @@ public class QueryNode {
         sb.append("MATCH ")
                 .append(body.getMatchClause("anchor"))
                 .delete(sb.length() - 2, sb.length()).append("\n");
-        sb.append(generateWhereClauseForBody())     // WHERE CLAUSE FOR BODY
-                .append("\n");
+        sb.append(generateWhereClauseForBody());     // WHERE CLAUSE FOR BODY;
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
                 .append(body.getWithVariables(ignore))
                 .delete(sb.length() - 2, sb.length()).append("\n");
