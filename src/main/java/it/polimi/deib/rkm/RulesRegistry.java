@@ -164,7 +164,7 @@ public class RulesRegistry {
 
     }
 
-    public void removeTautologies(){
+    public void removeTautologiesOld(){
         // Remove tautologies from table Results
         // A tautology is a rule where the head and body are the same
         // Check if tautologies are possible at schema level
@@ -179,6 +179,119 @@ public class RulesRegistry {
                     this.rules.stringColumn(headColumns.get(0))
                             .isNotEqualTo(this.rules.stringColumn(bodyColumns.get(0))));
         }
+    }
+
+    public void removeTautologies(){
+        // Remove tautologies from table Results
+        // A tautology is a rule where the head and body are the same
+        // Check if tautologies are possible at schema level
+
+        List<String> headColumns = this.rules.columnNames().stream()
+                .filter(column -> column.contains("head"))
+                .toList();
+        List<String> bodyColumns = this.rules.columnNames().stream()
+                .filter(column -> column.contains("body"))
+                .toList();
+
+        List<String> columnNames = new ArrayList<>();
+        columnNames.addAll(headColumns);
+        columnNames.addAll(bodyColumns);
+
+        // reorder in alphabetical order the columns
+        List<String> sortedColumnNames = columnNames.stream().sorted().toList();
+
+        // group columns based on their itemset
+        Map<String, List<String>> groupedColumns = new LinkedHashMap<>();
+
+        for (String columnName : columnNames) {
+            String[] parts = columnName.split("_");
+            String cardinality = columnName.substring(columnName.length() - 1);
+            if (Character.isDigit(cardinality.charAt(0))) {
+                cardinality = cardinality;
+            }
+            else { cardinality = "";}
+            String indexPart = parts[0] + cardinality; // head0, head01, head1 etc.
+            groupedColumns.computeIfAbsent(indexPart, k -> new ArrayList<>()).add(columnName);
+        }
+
+        // create aggregated list
+        List<Object> aggregatedList = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : groupedColumns.entrySet()) {
+            List<String> columns = entry.getValue();
+            if (columns.size() == 1) {
+                aggregatedList.add(columns.get(0));
+            } else {
+                aggregatedList.add(columns);
+            }
+        }
+
+        List<List<Object>> pairedColumns = createPairs(aggregatedList);
+
+        for (List<Object> pair : pairedColumns) {
+            if (pair.get(0) instanceof String) {
+                String col1Name = (String) pair.get(0);
+                String col2Name = (String) pair.get(1);
+                this.rules = this.rules.where(this.rules.stringColumn(col1Name)
+                        .isNotEqualTo(this.rules.stringColumn(col2Name)).or(this.rules.stringColumn(col1Name).isEqualTo("")));
+            } else if (pair.get(0) instanceof List) {
+                    List<String> colList1 = (List<String>) pair.get(0);
+                    List<String> colList2 = (List<String>) pair.get(1);
+                    var condition = this.rules.stringColumn(colList1.get(0))
+                            .isNotEqualTo(this.rules.stringColumn(colList2.get(0)))
+                            .or(this.rules.stringColumn(colList1.get(0)).isEqualTo(""));
+                    for (int i = 1; i < colList1.size(); i++) {
+                        condition = condition.and(this.rules.stringColumn(colList1.get(i))
+                                .isNotEqualTo(this.rules.stringColumn(colList2.get(i)))
+                                .or(this.rules.stringColumn(colList1.get(i)).isEqualTo("")));
+                    }
+                    this.rules = this.rules.where(condition);
+            }
+        }
+
+    }
+
+    public static List<List<Object>> createPairs(List<Object> columnList) {
+        List<List<Object>> pairs = new ArrayList<>();
+
+        for (int i = 0; i < columnList.size(); i++) {
+            for (int j = i + 1; j < columnList.size(); j++) {
+                Object col1 = columnList.get(i);
+                Object col2 = columnList.get(j);
+
+                if (haveSameStructure(col1, col2)) {
+                    pairs.add(Arrays.asList(col1, col2));
+                }
+            }
+        }
+
+        return pairs;
+    }
+
+    public static boolean haveSameStructure(Object col1, Object col2) {
+        if (col1 instanceof String && col2 instanceof String) {
+            return getStructure((String) col1).equals(getStructure((String) col2));
+        } else if (col1 instanceof List && col2 instanceof List) {
+            List<String> list1 = (List<String>) col1;
+            List<String> list2 = (List<String>) col2;
+
+            if (list1.size() != list2.size()) {
+                return false;
+            }
+
+            for (int i = 0; i < list1.size(); i++) {
+                if (!getStructure(list1.get(i)).equals(getStructure(list2.get(i)))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static String getStructure(String columnName) {
+        String structure = columnName.replaceAll("\\d+", "");
+        structure = structure.replaceAll("body", "head");
+        return structure;
     }
 
     public void computeMetrics(){

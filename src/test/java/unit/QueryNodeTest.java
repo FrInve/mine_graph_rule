@@ -2,14 +2,11 @@ package unit;
 
 import it.polimi.deib.rkm.QueryNode;
 import it.polimi.deib.rkm.Query;
-import it.polimi.deib.rkm.filtering.ImmediateWhere;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class QueryNodeTest {
 
