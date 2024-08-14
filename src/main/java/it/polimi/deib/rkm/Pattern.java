@@ -69,6 +69,13 @@ public class Pattern {
                 .flatMap(Function.identity());
     }
 
+    public String getCountWhereClause(Set<String> ignore) {
+        StringBuilder sb = new StringBuilder();
+        IntStream.range(0, num.intValue())
+                .forEach(i -> sb.append(patternTail.getWhereCountCondition(0, null, i, ignore)));
+        return sb.toString();
+    }
+
     public String getReturnVariables(String prefix, Set<String> ignore) {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, num.intValue())

@@ -1,6 +1,8 @@
 package it.polimi.deib.rkm.fragments;
 
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Count implements TailFragment {
     private final String relationshipType;
@@ -8,6 +10,7 @@ public class Count implements TailFragment {
     private final String nodeVariable;
     private int minValue;
     private TailFragment previousFragment;
+    List<Integer> whereCheck = new ArrayList<>();
 
     public Count(Map<String, String> serializedFragment){
         this.relationshipType = serializedFragment.get("relationshipType");
@@ -43,6 +46,21 @@ public class Count implements TailFragment {
     }
 
     @Override
+    public String getNodeLabel() {
+        return nodeLabel;
+    }
+
+    @Override
+    public String getRelationshipType() {
+        return relationshipType;
+    }
+
+    @Override
+    public int getMinValue() {
+        return minValue;
+    }
+
+    @Override
     public void setPreviousFragment(TailFragment previousFragment) {
         this.previousFragment = previousFragment;
     }
@@ -68,4 +86,29 @@ public class Count implements TailFragment {
         return "size([(" + startNodeVariable + ")-[countPath:" + relationshipType +
                 "]->(" + endNodeVariable + ") | countPath]) >= " + minValue;
     }
+
+    @Override
+    public String getWhereCountClause(int iterationNumber, String startNodePlaceholder, String endNodePlaceholder) {
+        String startNodeVariable;
+        if(previousFragment == null & startNodePlaceholder == null){
+            startNodeVariable = "anchor";
+        } else if(startNodePlaceholder == null){
+            startNodeVariable = previousFragment.getNodeVariable() +
+                    (iterationNumber == 0 ? "" : iterationNumber);
+        } else {
+            startNodeVariable = startNodePlaceholder;
+        }
+        return "(" + startNodeVariable + ")-[:" + relationshipType + "]->(" + endNodePlaceholder + ")";
+    }
+
+    @Override
+    public boolean checkWhereCountList(int number) {
+        return !whereCheck.contains(number);
+    }
+
+    @Override
+    public void addIterationWhereCountList(int number) {
+        whereCheck.add(number);
+    }
+
 }

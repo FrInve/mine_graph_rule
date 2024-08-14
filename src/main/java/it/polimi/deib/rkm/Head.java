@@ -47,6 +47,14 @@ public class Head extends PatternSet {
         return this.patterns.stream().flatMap(p -> p.getFragmentsWhereClauses("head"));
     }
 
+
+    @Override
+    public String getCountWhereClauses(Set<String> ignore){
+        StringBuilder sb = new StringBuilder();
+        this.patterns.forEach(p -> sb.append(p.getCountWhereClause(ignore)));
+        return sb.toString();
+    }
+
     @Override
     public List<String> getColumnNames(String prefix, Set<String> ignore) {
         List<String> columns = new ArrayList<>();

@@ -16,6 +16,16 @@ public class Normal implements TailFragment {
     public String getNodeVariable(){
         return nodeVariable;
     }
+
+    @Override
+    public String getNodeLabel() {
+        return nodeLabel;
+    }
+
+    @Override
+    public String getRelationshipType() {
+        return relationshipType;
+    }
     public String toCypher(int iterationNumber){
         if (iterationNumber == 0) {
             return "-[:" + relationshipType + "]->(" + nodeVariable + ":" + nodeLabel + ")";

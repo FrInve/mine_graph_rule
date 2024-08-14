@@ -19,6 +19,16 @@ public class Any implements TailFragment {
         return nodeVariable;
     }
 
+    @Override
+    public String getNodeLabel() {
+        return nodeLabel;
+    }
+
+    @Override
+    public String getRelationshipType() {
+        return relationshipType;
+    }
+
     public String toCypher(int iterationNumber){
         if (iterationNumber == 0) {
             return "-[*" + relationshipLength + "]->(" + nodeVariable + ":" + nodeLabel + ")";

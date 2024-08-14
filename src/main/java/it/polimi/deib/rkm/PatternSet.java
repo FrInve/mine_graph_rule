@@ -41,6 +41,8 @@ public abstract class PatternSet {
     public abstract String getWithVariables(Set<String> ignore);
     public abstract String getReturnVariables(Set<String> ignore);
 
+    public abstract String getCountWhereClauses(Set<String> ignore);
+
     public abstract List<String> getColumnNames(String prefix, Set<String> ignore);
 
     public int getVariableCardinality(String variable){

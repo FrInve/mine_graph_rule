@@ -71,4 +71,77 @@ public class PatternTail {
             }
         }
     }
+
+    public String getWhereCountCondition(int startingPoint, String startNodePlaceholder, int i, Set<String> ignore){
+        String whereCountCondition = "";
+        for (int j = startingPoint; j < tail.size(); j++) {
+            if (tail.get(j) instanceof Count & tail.get(j).checkWhereCountList(i)){
+                if (!ignore.contains(tail.get(j).getNodeVariable())) {
+                    String newWhereCountCondition =  "COUNT{" + tail.get(j).getWhereCountClause(i, startNodePlaceholder, tail.get(j).getNodeVariable()+ (i == 0 ? "" : i)) +
+                            "}>=" + tail.get(j).getMinValue();
+                    if (whereCountCondition.isEmpty()) {
+                        whereCountCondition = newWhereCountCondition;
+                    } else {
+                        whereCountCondition = whereCountCondition + " AND " + newWhereCountCondition;
+                    }
+                }
+                else {
+                    String whereExistCondition = "";
+                    String placeholder =  tail.get(j).getNodeVariable()  + (i == 0 ? "" : i)  + "Placeholder" + j;
+                    if (j+1<tail.size()){
+                        if (tail.get(j+1) instanceof Count){
+                            whereExistCondition = "WHERE " + getWhereCountCondition(j+1, placeholder, i, ignore);
+                        }
+                        else {
+                            whereExistCondition = "WHERE EXISTS{(" + placeholder + ")";
+                            boolean ignoreStep = true;
+                            for (int z = j + 1; z < tail.size() & ignoreStep; z++) {
+                                if (!ignore.contains(tail.get(z).getNodeVariable())) {
+                                    if (z+1>=tail.size()){
+                                        whereExistCondition = whereExistCondition + "-[:" + tail.get(z).getRelationshipType() +
+                                                "]->(" + tail.get(z).getNodeVariable() + (i == 0 ? "" : i) + ")";
+                                    } else if (tail.get(z + 1) instanceof Count) {
+                                        whereExistCondition = whereExistCondition + "-[:" + tail.get(z).getRelationshipType() +
+                                                "]->(" + tail.get(z).getNodeVariable() + (i == 0 ? "" : i) + ")";
+                                        whereExistCondition = whereExistCondition + " WHERE " + getWhereCountCondition(z + 1, tail.get(z).getNodeVariable() + (i == 0 ? "" : i), i, ignore);
+                                    } else {
+                                        whereExistCondition = whereExistCondition + "-[:" + tail.get(z).getRelationshipType() +
+                                                "]->(" + tail.get(z).getNodeVariable() + (i == 0 ? "" : i) + ")";
+                                    }
+                                    ignoreStep = false;
+                                } else {
+                                    if (z+1>= tail.size()){
+                                        whereExistCondition = whereExistCondition + "-[:" + tail.get(z).getRelationshipType() +
+                                                "]->(" + tail.get(z).getNodeLabel() + ")";
+                                    } else if (tail.get(z + 1) instanceof Count) {
+                                        String placeholderExist = tail.get(z).getNodeVariable() + (i == 0 ? "" : i) + "PlaceholderInnested" + z;
+                                        whereExistCondition = whereExistCondition + "-[:" + tail.get(z).getRelationshipType() +
+                                                "]->(" + placeholderExist + ":" + tail.get(z).getNodeLabel() + ")";
+                                        whereExistCondition = whereExistCondition + " WHERE " + getWhereCountCondition(z + 1, placeholderExist, i, ignore);
+                                        ignoreStep = false;
+                                    } else {
+                                        whereExistCondition = whereExistCondition + "-[:" + tail.get(z).getRelationshipType() +
+                                                "]->(" + tail.get(z).getNodeLabel() + ")";
+                                    }
+                                }
+                            }
+                            whereExistCondition = whereExistCondition + "}";
+                        }
+                    }
+                    String newWhereCountCondition = "COUNT{" + tail.get(j).getWhereCountClause(i, startNodePlaceholder, placeholder + ":" +
+                            tail.get(j).getNodeLabel()) + " " + whereExistCondition +
+                            "}>=" + tail.get(j).getMinValue();
+                    if (whereCountCondition.isEmpty()) {
+                        whereCountCondition = newWhereCountCondition;
+                    } else {
+                        whereCountCondition = whereCountCondition + " AND " + newWhereCountCondition;
+                    }
+                }
+                tail.get(j).addIterationWhereCountList(i);
+            }
+        }
+
+        return whereCountCondition;
+    }
+
 }

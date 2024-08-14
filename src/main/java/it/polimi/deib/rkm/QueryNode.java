@@ -100,8 +100,15 @@ public class QueryNode {
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInRule(w.getOtherVariable())));
         Stream<String> whereStream = where.stream().map(Where::getWhereClause);
         // Add count fragments WHERE clauses like: size([(a)-[countPath:Type]->(b) | countPath]) >= min
-        whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
-        whereStream = Stream.concat(whereStream, head.getFragmentsWhereClauses()).filter(Objects::nonNull);
+        // whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+        // whereStream = Stream.concat(whereStream, head.getFragmentsWhereClauses()).filter(Objects::nonNull);
+
+        //Stream<String> whereStream = body.getFragmentsWhereClauses();
+        //whereStream = Stream.concat(whereStream, head.getFragmentsWhereClauses()).filter(Objects::nonNull);
+
+        String bodyWhereCountContent = body.getCountWhereClauses(ignore);
+        String headWhereCountContent = head.getCountWhereClauses(ignore);
+        whereStream = Stream.concat(whereStream, Stream.of(bodyWhereCountContent, headWhereCountContent).filter(s -> !s.isEmpty()));
 
         String whereContent;
 //        if(whereStream.count() > 1){
@@ -119,7 +126,11 @@ public class QueryNode {
         where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInBody(w.getVariable())));
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInBody(w.getOtherVariable())));
         Stream<String> whereStream = where.stream().filter(w->w.existVariable() && w.existOtherVariable()).map(Where::getWhereClause);
-        whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+        // whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+
+        String bodyWhereCountContent = body.getCountWhereClauses(ignore);
+        whereStream = Stream.concat(whereStream, Stream.of(bodyWhereCountContent).filter(s -> !s.isEmpty()));
+
         String whereContent;
         whereContent = whereStream.filter(Objects::nonNull).collect(Collectors.joining(" AND "));
 

@@ -28,7 +28,10 @@ public class QueryNodeTest {
                                 "relationshipType", "BUY",
                                 "nodeLabel", "Product",
                                 "nodeVariable", "bodyProduct",
-                                "minValue", "2")))),
+                                "minValue", "2"), Map.of("type", "normal",
+                                "relationshipType", "OF",
+                                "nodeLabel", "Category",
+                                "nodeVariable", "bodyCategory")))),
                 List.of(Map.of("variable", "bodyProduct",
                         "variableProperty", "price",
                         "operand", "=",
@@ -37,7 +40,7 @@ public class QueryNodeTest {
                                 "variableProperty", "price",
                                 "operand", "=",
                                 "constantValue", "10")),
-                List.of(),
+                List.of("bodyProduct"),
                 0.1,
                 0.1
         );

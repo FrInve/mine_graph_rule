@@ -46,6 +46,13 @@ public class Body extends PatternSet {
         return this.patterns.stream().flatMap(p -> p.getFragmentsWhereClauses("body"));
     }
 
+    @Override
+    public String getCountWhereClauses(Set<String> ignore){
+        StringBuilder sb = new StringBuilder();
+        this.patterns.forEach(p -> sb.append(p.getCountWhereClause(ignore)));
+        return sb.toString();
+    }
+
 
     @Override
     public List<String> getColumnNames(String prefix, Set<String> ignore) {
