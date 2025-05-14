@@ -5,11 +5,11 @@ public interface TailFragment {
         // Do nothing
     }
     String toCypher(int iterationNumber);
-    String getCypherWithDefinition(String prefix, int iterationNumber);
+    String getCypherWithDefinition(String prefix, int iterationNumber, String patternAlias);
     String getNodeVariable();
     String getNodeLabel();
     String getRelationshipType();
-    String getReturnVariable(String prefix, int iterationNumber);
+    String getReturnVariable(String prefix, int iterationNumber, String patternAlias);
 
     default String getWhereClause(String prefix, int iterationNumber) {
         return null;

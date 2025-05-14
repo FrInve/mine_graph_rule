@@ -38,12 +38,12 @@ public abstract class PatternSet {
 
     public abstract Stream<String> getFragmentsWhereClauses();
 
-    public abstract String getWithVariables(Set<String> ignore);
-    public abstract String getReturnVariables(Set<String> ignore);
+    public abstract String getWithVariables(Set<String> ignore, Boolean renameColumns);
+    public abstract String getReturnVariables(Set<String> ignore, Boolean renameColumns);
 
     public abstract String getCountWhereClauses(Set<String> ignore);
 
-    public abstract List<String> getColumnNames(String prefix, Set<String> ignore);
+    public abstract List<String> getColumnNames(String prefix, Set<String> ignore, Boolean renameColumns);
 
     public int getVariableCardinality(String variable){
         return patterns.stream().map(p -> p.getVariableCardinality(variable)).max(Integer::compare).orElse(0);

@@ -35,17 +35,17 @@ public class PatternTail {
         return sb.toString();
     }
 
-    public String getWithVariables(String prefix, int i, Set<String> ignore){
+    public String getWithVariables(String prefix, int i, Set<String> ignore, String patternAlias){
         StringBuilder sb = new StringBuilder();
         tail.stream().filter(fragment -> !ignore.contains(fragment.getNodeVariable()))
-                .forEach(fragment -> sb.append(fragment.getCypherWithDefinition(prefix, i)).append(", "));
+                .forEach(fragment -> sb.append(fragment.getCypherWithDefinition(prefix, i, patternAlias)).append(", "));
         return sb.toString();
     }
 
-    public List<String> getColumnNames(String prefix, int i, Set<String> ignore) {
+    public List<String> getColumnNames(String prefix, int i, Set<String> ignore, String patternAlias) {
         List<String> columns = new ArrayList<>();
         tail.stream().filter(fragment -> !ignore.contains(fragment.getNodeVariable()))
-                .forEach(fragment -> columns.add(fragment.getReturnVariable(prefix, i)));
+                .forEach(fragment -> columns.add(fragment.getReturnVariable(prefix, i, patternAlias)));
         return columns;
     }
 
@@ -53,10 +53,10 @@ public class PatternTail {
         return tail.stream().map(f -> f.getWhereClause(prefix, i));
     }
 
-    public String getReturnVariables(String prefix, int i, Set<String> ignore) {
+    public String getReturnVariables(String prefix, int i, Set<String> ignore, String patternAlias) {
         StringBuilder sb = new StringBuilder();
         tail.stream().filter(fragment -> !ignore.contains(fragment.getNodeVariable()))
-                .forEach(fragment -> sb.append(fragment.getReturnVariable(prefix, i)).append(", "));
+                .forEach(fragment -> sb.append(fragment.getReturnVariable(prefix, i, patternAlias)).append(", "));
         return sb.toString();
     }
 

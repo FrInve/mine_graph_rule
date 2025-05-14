@@ -42,7 +42,8 @@ public class QueryNodeTest {
                                 "constantValue", "10")),
                 List.of("bodyProduct"),
                 0.1,
-                0.1
+                0.1,
+                Map.of("Item", "id")
         );
     }
 

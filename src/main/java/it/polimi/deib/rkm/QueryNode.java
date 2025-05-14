@@ -158,15 +158,15 @@ public class QueryNode {
                 .delete(sb.length() - 2, sb.length()).append("\n");
         sb.append(generateWhereClauseForRule()); // WHERE CLAUSE FOR RULE
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
-                .append(body.getWithVariables(ignore))
-                .append(head.getWithVariables(ignore))//.append(", ")
+                .append(body.getWithVariables(ignore, false))
+                .append(head.getWithVariables(ignore, false))//.append(", ")
                 .delete(sb.length() - 2, sb.length()).append("\n");
 
         sb.append("WHERE suppcount > ").append(transactionsCount * support).append("\n");
 
         sb.append("RETURN suppcount, ")
-                .append(body.getReturnVariables(ignore))
-                .append(head.getReturnVariables(ignore))//.append(", ")
+                .append(body.getReturnVariables(ignore, false))
+                .append(head.getReturnVariables(ignore, false))//.append(", ")
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
     }
@@ -188,13 +188,13 @@ public class QueryNode {
                 .delete(sb.length() - 2, sb.length()).append("\n");
         sb.append(generateWhereClauseForBody());     // WHERE CLAUSE FOR BODY;
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
-                .append(body.getWithVariables(ignore))
+                .append(body.getWithVariables(ignore, false))
                 .delete(sb.length() - 2, sb.length()).append("\n");
 
         sb.append("WHERE suppcount > ").append((int) Math.floor(transactionsCount * support)).append("\n");
 
         sb.append("RETURN suppcount, ")
-                .append(body.getReturnVariables(ignore))
+                .append(body.getReturnVariables(ignore, false))
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
     }

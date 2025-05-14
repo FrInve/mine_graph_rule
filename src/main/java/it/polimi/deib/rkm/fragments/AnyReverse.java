@@ -29,6 +29,11 @@ public class AnyReverse implements TailFragment {
         return relationshipType;
     }
 
+    @Override
+    public String getReturnVariable(String prefix, int iterationNumber, String patternAlias) {
+        return null;
+    }
+
     public String toCypher(int iterationNumber){
         if (iterationNumber == 0) {
             return "<-[*" + relationshipLength + "]-(" + nodeVariable + ":" + nodeLabel + ")";
@@ -36,6 +41,11 @@ public class AnyReverse implements TailFragment {
             return "<-[*" + relationshipLength + "]-(" + nodeVariable + iterationNumber + ":" + nodeLabel + ")";
 
         }
+    }
+
+    @Override
+    public String getCypherWithDefinition(String prefix, int iterationNumber, String patternAlias) {
+        return null;
     }
 
     public String getCypherWithDefinition(String prefix, int iterationNumber) {
