@@ -24,7 +24,8 @@ public class MineGraphRule {
             @Name("where")       List<Map<String, String>> where,
             @Name("ignore")      List<String> ignore,
             @Name("support")    Number support,
-            @Name("confidence") Number confidence
+            @Name("confidence") Number confidence,
+            @Name("propertiesMap") Map<String, String> propertiesMap
             ) {
         Query query = new Query(
                 anchor,
@@ -35,7 +36,8 @@ public class MineGraphRule {
                 where,
                 ignore,
                 support.doubleValue(),
-                confidence.doubleValue());
+                confidence.doubleValue(),
+                propertiesMap);
         // Create queries and retrieve data from Neo4j
         RulesRegistry rulesRegistry = new RulesRegistry();
 

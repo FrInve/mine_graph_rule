@@ -47,15 +47,19 @@ public final class AssociationRule {
             return this;
         }
 
-        public AssociationRuleBuilder addHead(String itemName, String item){
-            itemName = itemName.replace("head_", "");
-            this.head.put(itemName, item);
+        public AssociationRuleBuilder addHead(String itemName, String item, Map<String, String> nameMapping){
+            // itemName = itemName.replaceFirst("head\\d+_", "");
+            String finalName = nameMapping.getOrDefault(itemName, itemName);
+            finalName = finalName.replace("head_", "");
+            this.head.put(finalName, item);
             return this;
         }
 
-        public AssociationRuleBuilder addBody(String itemName, String item){
-            itemName = itemName.replace("body_", "");
-            this.body.put(itemName, item);
+        public AssociationRuleBuilder addBody(String itemName, String item, Map<String, String> nameMapping){
+            //itemName = itemName.replaceFirst("body\\d+_", "");
+            String finalName = nameMapping.getOrDefault(itemName, itemName);
+            finalName = finalName.replace("body_", "");
+            this.body.put(finalName, item);
             return this;
         }
 

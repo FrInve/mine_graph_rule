@@ -17,6 +17,21 @@ public class Reverse implements TailFragment {
         return nodeVariable;
     }
 
+    @Override
+    public String getNodeLabel() {
+        return nodeLabel;
+    }
+
+    @Override
+    public String getRelationshipType() {
+        return relationshipType;
+    }
+
+    @Override
+    public String getReturnVariable(String prefix, int iterationNumber, String patternAlias) {
+        return null;
+    }
+
     public String toCypher(int iterationNumber){
         if (iterationNumber == 0) {
             return "<-[:" + relationshipType + "]-(" + nodeVariable + ":" + nodeLabel + ")";
@@ -24,6 +39,11 @@ public class Reverse implements TailFragment {
             return "<-[:" + relationshipType + "]-(" + nodeVariable + iterationNumber + ":" + nodeLabel + ")";
 
         }
+    }
+
+    @Override
+    public String getCypherWithDefinition(String prefix, int iterationNumber, String patternAlias) {
+        return null;
     }
 
     public String getCypherWithDefinition(String prefix, int iterationNumber) {

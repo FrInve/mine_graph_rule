@@ -26,18 +26,18 @@ public class Body extends PatternSet {
     }
 
     @Override
-    public String getWithVariables(Set<String> ignore) {
+    public String getWithVariables(Set<String> ignore, Boolean renameColumns) {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, this.getPatterns().size())
-                .forEach(i -> sb.append(this.getPatterns().get(i).getWithVariables("body" + i, ignore)));
+                .forEach(i -> sb.append(this.getPatterns().get(i).getWithVariables("body" + i, ignore, renameColumns)));
         return sb.toString();
     }
 
     @Override
-    public String getReturnVariables(Set<String> ignore) {
+    public String getReturnVariables(Set<String> ignore, Boolean renameColumns) {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, this.getPatterns().size())
-                .forEach(i -> sb.append(this.getPatterns().get(i).getReturnVariables("body" + i, ignore)));
+                .forEach(i -> sb.append(this.getPatterns().get(i).getReturnVariables("body" + i, ignore, renameColumns)));
         return sb.toString();
     }
 
@@ -46,12 +46,19 @@ public class Body extends PatternSet {
         return this.patterns.stream().flatMap(p -> p.getFragmentsWhereClauses("body"));
     }
 
+    @Override
+    public String getCountWhereClauses(Set<String> ignore){
+        StringBuilder sb = new StringBuilder();
+        this.patterns.forEach(p -> sb.append(p.getCountWhereClause(ignore)));
+        return sb.toString();
+    }
+
 
     @Override
-    public List<String> getColumnNames(String prefix, Set<String> ignore) {
+    public List<String> getColumnNames(String prefix, Set<String> ignore, Boolean renameColumns) {
         List<String> columns = new ArrayList<>();
         IntStream.range(0, this.getPatterns().size())
-                .forEach(i -> columns.addAll(this.getPatterns().get(i).getColumnNames(prefix + i, ignore)));
+                .forEach(i -> columns.addAll(this.getPatterns().get(i).getColumnNames(prefix + i, ignore, renameColumns)));
         return columns;
     }
 }
