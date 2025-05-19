@@ -65,7 +65,7 @@ public class Count implements TailFragment {
                     (iterationNumber == 0 ? "" : iterationNumber);
         }
         String endNodeVariable = nodeVariable + (iterationNumber == 0 ? "" : iterationNumber);
-        return "size([(" + startNodeVariable + ")-[countPath:" + relationshipType +
-                "]->(" + endNodeVariable + ") | countPath]) >= " + minValue;
+        return "COUNT{(" + startNodeVariable + ")-[" + relationshipType +
+                "]->(" + endNodeVariable + ")} >= " + minValue;
     }
 }
