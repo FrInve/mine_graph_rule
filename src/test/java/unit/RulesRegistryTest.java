@@ -33,7 +33,8 @@ public class RulesRegistryTest {
                 List.of(),
                 List.of(),
                 0.1,
-                0.1
+                0.1,
+                Map.of("Item", "id")
         );
     }
 
@@ -77,7 +78,9 @@ public class RulesRegistryTest {
                 List.of(),
                 List.of(),
                 0.1,
-                0.1
+                0.1,
+                Map.of("Item", "id")
+
         );
     }
 

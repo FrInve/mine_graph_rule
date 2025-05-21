@@ -16,11 +16,14 @@ public class RulesRegistry {
     private QueryNode treeOfQueries;
     private final Set<QueryNode> visitedQueries;
 
+    private Map<String, String> columnDictionary;
+
     public RulesRegistry(){
         this.rules = Table.create("rules");
         this.bodies = Table.create("bodies");
         this.transactionCount = 0L;
         this.visitedQueries = new HashSet<>();
+        this.columnDictionary = new HashMap<>();
     }
 
     public void initTreeOfQueries(Query query){
@@ -41,6 +44,7 @@ public class RulesRegistry {
                 this.bodies.addColumns(StringColumn.create(column));
             }
         });
+        this.columnDictionary.putAll(query.getColumnsNewNames());
     }
 
     public void retrieveTransactionsCount(GraphDatabaseService db, Query query){
@@ -333,8 +337,8 @@ public class RulesRegistry {
                     .setSupport(row.getDouble("support"))
                     .setConfidence(row.getDouble("confidence"));
 
-            headColumns.forEach(column -> builder.addHead(column, row.getString(column)));
-            bodyColumns.forEach(column -> builder.addBody(column, row.getString(column)));
+            headColumns.forEach(column -> builder.addHead(column, row.getString(column), this.columnDictionary));
+            bodyColumns.forEach(column -> builder.addBody(column, row.getString(column), this.columnDictionary));
 
             return builder.build().toRecord();
         });

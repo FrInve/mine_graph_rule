@@ -100,8 +100,15 @@ public class QueryNode {
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInRule(w.getOtherVariable())));
         Stream<String> whereStream = where.stream().map(Where::getWhereClause);
         // Add count fragments WHERE clauses like: size([(a)-[countPath:Type]->(b) | countPath]) >= min
-        whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
-        whereStream = Stream.concat(whereStream, head.getFragmentsWhereClauses()).filter(Objects::nonNull);
+        // whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+        // whereStream = Stream.concat(whereStream, head.getFragmentsWhereClauses()).filter(Objects::nonNull);
+
+        //Stream<String> whereStream = body.getFragmentsWhereClauses();
+        //whereStream = Stream.concat(whereStream, head.getFragmentsWhereClauses()).filter(Objects::nonNull);
+
+        String bodyWhereCountContent = body.getCountWhereClauses(ignore);
+        String headWhereCountContent = head.getCountWhereClauses(ignore);
+        whereStream = Stream.concat(whereStream, Stream.of(bodyWhereCountContent, headWhereCountContent).filter(s -> !s.isEmpty()));
 
         String whereContent;
 //        if(whereStream.count() > 1){
@@ -119,7 +126,11 @@ public class QueryNode {
         where.forEach(w -> w.setVariableCardinality(this.getVariableCardinalityInBody(w.getVariable())));
         where.forEach(w -> w.setOtherVariableCardinality(this.getVariableCardinalityInBody(w.getOtherVariable())));
         Stream<String> whereStream = where.stream().filter(w->w.existVariable() && w.existOtherVariable()).map(Where::getWhereClause);
-        whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+        // whereStream = Stream.concat(whereStream, body.getFragmentsWhereClauses());
+
+        String bodyWhereCountContent = body.getCountWhereClauses(ignore);
+        whereStream = Stream.concat(whereStream, Stream.of(bodyWhereCountContent).filter(s -> !s.isEmpty()));
+
         String whereContent;
         whereContent = whereStream.filter(Objects::nonNull).collect(Collectors.joining(" AND "));
 
@@ -147,15 +158,15 @@ public class QueryNode {
                 .delete(sb.length() - 2, sb.length()).append("\n");
         sb.append(generateWhereClauseForRule()); // WHERE CLAUSE FOR RULE
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
-                .append(body.getWithVariables(ignore))
-                .append(head.getWithVariables(ignore))//.append(", ")
+                .append(body.getWithVariables(ignore, false))
+                .append(head.getWithVariables(ignore, false))//.append(", ")
                 .delete(sb.length() - 2, sb.length()).append("\n");
 
         sb.append("WHERE suppcount > ").append(transactionsCount * support).append("\n");
 
         sb.append("RETURN suppcount, ")
-                .append(body.getReturnVariables(ignore))
-                .append(head.getReturnVariables(ignore))//.append(", ")
+                .append(body.getReturnVariables(ignore, false))
+                .append(head.getReturnVariables(ignore, false))//.append(", ")
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
     }
@@ -177,13 +188,13 @@ public class QueryNode {
                 .delete(sb.length() - 2, sb.length()).append("\n");
         sb.append(generateWhereClauseForBody());     // WHERE CLAUSE FOR BODY;
         sb.append("WITH count(DISTINCT ").append("anchor").append(") as suppcount, ")
-                .append(body.getWithVariables(ignore))
+                .append(body.getWithVariables(ignore, false))
                 .delete(sb.length() - 2, sb.length()).append("\n");
 
         sb.append("WHERE suppcount > ").append((int) Math.floor(transactionsCount * support)).append("\n");
 
         sb.append("RETURN suppcount, ")
-                .append(body.getReturnVariables(ignore))
+                .append(body.getReturnVariables(ignore, false))
                 .delete(sb.length() - 2, sb.length());//.append("\n");
         return sb.toString();
     }
