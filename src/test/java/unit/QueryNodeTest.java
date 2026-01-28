@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 
 public class QueryNodeTest {
@@ -15,14 +16,14 @@ public class QueryNodeTest {
                 "person",
                 "Person",
                 "anchorWhereClause",
-                List.of(Map.of("numMin", 1L,
+                List.of(new HashMap<>(Map.of("numMin", 1L,
                         "numMax", 3L,
                         "patternTail", List.of(Map.of("type", "count",
                                 "relationshipType", "BUY",
                                 "nodeLabel", "Product",
                                 "nodeVariable", "headProduct",
-                                "minValue", "2")))),
-                List.of(Map.of("numMin", 1L,
+                                "minValue", "2"))))),
+                List.of(new HashMap<>(Map.of("numMin", 1L,
                         "numMax", 3L,
                         "patternTail", List.of(Map.of("type", "count",
                                 "relationshipType", "BUY",
@@ -36,7 +37,7 @@ public class QueryNodeTest {
                                 Map.of("type", "normal",
                                         "relationshipType", "OF",
                                         "nodeLabel", "MacroCategory",
-                                        "nodeVariable", "bodyMacroCategory")))),
+                                        "nodeVariable", "bodyMacroCategory"))))),
                 List.of(Map.of("variable", "bodyProduct",
                         "variableProperty", "price",
                         "operand", "=",
@@ -47,7 +48,8 @@ public class QueryNodeTest {
                                 "constantValue", "10")),
                 List.of("bodyProduct", "bodyCategory"),
                 0.1,
-                0.1
+                0.1,
+                Map.of()
         );
     }
 

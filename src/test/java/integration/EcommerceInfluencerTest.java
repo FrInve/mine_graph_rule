@@ -222,7 +222,7 @@ class EcommerceInfluencerTest {
              */
             // language=cypher
             var rules = session.run("""
-                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", constantValue: "100"}],[], 0.1, 0.1)
+                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", constantValue: "100"}],[], 0.1, 0.1, {})
                     """)
                     .stream().toList();
 
@@ -248,7 +248,7 @@ class EcommerceInfluencerTest {
              */
             // language=cypher
             var rules = session.run("""
-                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", otherVariable: "h", otherVariableProperty: "price"}],[], 0.1, 0.1)
+                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", otherVariable: "h", otherVariableProperty: "price"}],[], 0.1, 0.1, {})
                     """)
                     .stream().toList();
 
@@ -274,7 +274,7 @@ class EcommerceInfluencerTest {
              */
             // language=cypher
             var rules = session.run("""
-                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", otherVariable: "h", otherVariableProperty: "price"}],[], 0.1, 0.1)
+                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:2, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", otherVariable: "h", otherVariableProperty: "price"}],[], 0.1, 0.1, {})
                     """)
                     .stream().toList();
 
@@ -299,7 +299,7 @@ class EcommerceInfluencerTest {
              */
             // language=cypher
             var rules = session.run("""
-                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", constantValue: "100"},{variable:"h",variableProperty:"price",operand:"<",constantValue:"100"}],[], 0.1, 0.1)
+                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b"}]}],[{variable:"b", variableProperty:"price", operand:"<", constantValue: "100"},{variable:"h",variableProperty:"price",operand:"<",constantValue:"100"}],[], 0.1, 0.1, {})
                     """)
                     .stream().toList();
 
@@ -323,7 +323,7 @@ class EcommerceInfluencerTest {
              */
             // language=cypher
             var rules = session.run("""
-                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "count", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b", minValue:"2"}]}],[],[], 0.1, 0.1)
+                    CALL apoc.mineGraphRule("P", "Person","", [{numMin:1, numMax:1, patternTail:[{type: "normal", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"h"}]}], [{numMin:1, numMax:1, patternTail:[{type: "count", relationshipType: "Buy", nodeLabel: "Item", nodeVariable:"b", minValue:"2"}]}],[],[], 0.1, 0.1, {})
                     """)
                     .stream().toList();
 

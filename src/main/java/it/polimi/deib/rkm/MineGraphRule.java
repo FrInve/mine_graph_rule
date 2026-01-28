@@ -38,6 +38,31 @@ public class MineGraphRule {
                 support.doubleValue(),
                 confidence.doubleValue(),
                 propertiesMap);
+        return runMining(query, support.doubleValue(), confidence.doubleValue());
+    }
+
+    @Procedure(name = "apoc.mineGraphRuleDsl", mode=Mode.READ)
+    @Description("Graph Association Rule Mining for Neo4j using DSL")
+    public Stream<AssociationRule.Record> mineGraphRuleDsl(
+            @Name("dsl") String dsl,
+            @Name("propertiesMap") Map<String, String> propertiesMap
+    ) {
+        DslParser.ParsedDsl parsed = DslParser.parse(dsl);
+        Query query = new Query(
+                parsed.anchor,
+                parsed.anchorLabel,
+                parsed.anchorWhereClause,
+                parsed.serializedHead,
+                parsed.serializedBody,
+                parsed.where,
+                parsed.ignore,
+                parsed.support,
+                parsed.confidence,
+                propertiesMap);
+        return runMining(query, parsed.support, parsed.confidence);
+    }
+
+    private Stream<AssociationRule.Record> runMining(Query query, double support, double confidence) {
         // Create queries and retrieve data from Neo4j
         RulesRegistry rulesRegistry = new RulesRegistry();
 
@@ -62,12 +87,9 @@ public class MineGraphRule {
         rulesRegistry.computeMetrics();
 
         // Filter by support and confidence
-        rulesRegistry.filterBySupportAndConfidence(support.doubleValue(), confidence.doubleValue());
+        rulesRegistry.filterBySupportAndConfidence(support, confidence);
 
         return rulesRegistry.getResults();
-//        AssociationRule.AssociationRuleBuilder asb = new AssociationRule.AssociationRuleBuilder();
-//        AssociationRule ar = asb.build();
-//        return Stream.of(ar.toRecord());
     }
 }
 
