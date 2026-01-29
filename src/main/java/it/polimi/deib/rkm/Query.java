@@ -2,8 +2,6 @@ package it.polimi.deib.rkm;
 
 import it.polimi.deib.rkm.filtering.Where;
 import it.polimi.deib.rkm.filtering.WhereFactory;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.StringColumn;
 
 import java.util.*;
 import java.util.stream.Collectors;

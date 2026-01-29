@@ -143,4 +143,18 @@ public class DslParserTest {
         assertEquals("h", w2.get("otherVariable"));
         assertEquals("price", w2.get("otherVariableProperty"));
     }
+
+    @Test
+    void testPatternAlias() {
+        String dsl = "MINE GRAPH RULE aliasTest " +
+                "GROUPING ON (person:Person) " +
+                "DEFINING BODY AS (person)-[:BUY]->(b:Item) AS myBuyPattern " +
+                "HEAD AS (person)-[:BUY]->(h:Item) " +
+                "EXTRACTING RULES WITH SUPPORT > 0.1 AND CONFIDENCE > 0.1";
+
+        DslParser.ParsedDsl parsed = DslParser.parse(dsl);
+        assertEquals(1, parsed.serializedBody.size());
+        Map<String, Object> bodyPattern = parsed.serializedBody.get(0);
+        assertEquals("myBuyPattern", bodyPattern.get("patternAlias"));
+    }
 }

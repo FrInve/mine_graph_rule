@@ -94,8 +94,8 @@ public class DslParser {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == '(') depth++;
-            if (c == ')') depth--;
+            if (c == '(' || c == '{' || c == '[') depth++;
+            if (c == ')' || c == '}' || c == ']') depth--;
             if (c == ',' && depth == 0) {
                 result.add(sb.toString().trim());
                 sb = new StringBuilder();
@@ -169,14 +169,16 @@ public class DslParser {
             }
 
             // Match following node: (variable:Label)
-            Matcher nodeM = Pattern.compile("^\\((\\w+):\\s*(\\w+)\\)").matcher(tailStr);
+            Matcher nodeM = Pattern.compile("^\\s*\\((\\w+):\\s*(\\w+)\\)").matcher(tailStr);
             if (nodeM.find()) {
                 fragment.put("nodeVariable", nodeM.group(1));
                 fragment.put("nodeLabel", nodeM.group(2));
                 tailStr = tailStr.substring(nodeM.end()).trim();
             }
             
-            if (fragment.isEmpty()) break;
+            if (fragment.isEmpty()) {
+                break;
+            }
             tail.add(fragment);
         }
         
